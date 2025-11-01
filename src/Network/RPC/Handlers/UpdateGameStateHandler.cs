@@ -79,6 +79,9 @@ internal sealed class UpdateGameStateHandler : RPCHandler
         }
 
         // Always update the last known game state for synchronization purposes
-        NetLobby.LobbyData.LastGameState = gameState;
+        if (!NetLobby.AmLobbyHost())
+        {
+            NetLobby.LobbyData.LastGameState = gameState;
+        }
     }
 }

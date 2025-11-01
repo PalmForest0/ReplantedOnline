@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Il2CppReloaded.DataModels;
 using Il2CppReloaded.TreeStateActivities;
+using Il2CppSource.DataModels;
 using Il2CppTekly.Extensions.DataProviders;
 using ReplantedOnline.Modules;
 
@@ -21,6 +22,7 @@ internal static class InstanceWrapperPatch
             if (dataProvider != null)
             {
                 InstanceWrapper<GameplayDataProvider>.Instance = dataProvider;
+                InstanceWrapper<VersusDataModel>.Instance = dataProvider.m_gameplayDataModel.m_versusDataModel;
             }
         }
     }

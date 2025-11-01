@@ -13,12 +13,4 @@ internal static class UserPatch
         // Force enable coop mode for online play
         __result = true;
     }
-
-    [HarmonyPatch(typeof(UserProfile), nameof(UserProfile.mHasSeenMultiplayerUnlocked), MethodType.Getter)]
-    [HarmonyPostfix]
-    internal static void MULTIPLAYER_UNLOCK_Postfix(ref bool __result)
-    {
-        // Unlock multiplayer so players can access online features
-        __result = true;
-    }
 }

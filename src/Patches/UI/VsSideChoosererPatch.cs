@@ -2,7 +2,6 @@
 using Il2CppReloaded.Gameplay;
 using Il2CppTekly.PanelViews;
 using MelonLoader;
-using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Network.RPC.Handlers;
 using System.Collections;
@@ -47,22 +46,6 @@ internal static class VsSideChoosererPatch
                     StartGameHandler.Send(SelectionSet.Random); // Start random mode
                 });
 
-                VsSideChooser.AddSideButton("SidePlants", () =>
-                {
-                    if (NetLobby.LobbyData.LastGameState != GameState.HostChoosePlants)
-                    {
-                        UpdateGameStateHandler.Send(GameState.HostChoosePlants);
-                    }
-                });
-
-                VsSideChooser.AddSideButton("SideZombies", () =>
-                {
-                    if (NetLobby.LobbyData.LastGameState != GameState.HostChooseZombie)
-                    {
-                        UpdateGameStateHandler.Send(GameState.HostChooseZombie);
-                    }
-                });
-
                 VsSideChooser.transform.Find($"Canvas/Layout/Center/Panel/ControllerBottom")?.gameObject?.SetActive(false);
             }
             else
@@ -93,12 +76,6 @@ internal static class VsSideChoosererPatch
             button.onClick = new();
             button.onClick.AddListener(callback); // Attach our online callback
         }
-    }
-
-    private static void AddSideButton(this PanelView panelView, string name, Action callback)
-    {
-        var button = panelView.transform.Find($"Canvas/Layout/Center/Panel/{name}")?.GetComponentInChildren<Button>();
-        button?.onClick.AddListener(callback); // Attach our online callback
     }
 
     private static void RemoveVSButton(this PanelView panelView, string name)

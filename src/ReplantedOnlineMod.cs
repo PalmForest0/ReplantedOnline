@@ -11,6 +11,7 @@ internal class ReplantedOnlineMod : MelonMod
 
     public override void OnInitializeMelon()
     {
+        _Harmony.PatchAll();
         InstanceAttribute.RegisterAll();
     }
 
