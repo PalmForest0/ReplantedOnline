@@ -21,9 +21,18 @@ internal class SteamNetClient
         ClientId = (int)id.AccountId;
         Name = SteamFriends.Internal.GetFriendPersonaName(SteamId);
         AmLocal = id == SteamUser.Internal.GetSteamID();
+        if (AmLocal)
+        {
+            LocalClient = this;
+        }
         HasEstablishedP2P = AmLocal;
         MelonLogger.Msg($"[SteamNetClient] P2P connections initialized with {Name} ({SteamId})");
     }
+
+    /// <summary>
+    /// Get the local SteamNetClient
+    /// </summary>
+    internal static SteamNetClient LocalClient { get; private set; }
 
     /// <summary>
     /// The Steam ID of this client.
