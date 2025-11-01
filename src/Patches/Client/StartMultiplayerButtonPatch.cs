@@ -5,7 +5,7 @@ using ReplantedOnline.Network.Online;
 namespace ReplantedOnline.Patches.Client;
 
 [HarmonyPatch]
-internal class StartMultiplayerButtonPatch
+internal static class StartMultiplayerButtonPatch
 {
     [HarmonyPatch(typeof(StartMultiplayerButton), nameof(StartMultiplayerButton._onButtonClicked))]
     [HarmonyPrefix]

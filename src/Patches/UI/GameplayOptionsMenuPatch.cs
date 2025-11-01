@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace ReplantedOnline.Patches.UI;
 
 [HarmonyPatch]
-internal class GameplayOptionsMenuPatch
+internal static class GameplayOptionsMenuPatch
 {
     [HarmonyPatch(typeof(GameplayOptionsMenu), nameof(GameplayOptionsMenu.OnEnable))]
     [HarmonyPostfix]

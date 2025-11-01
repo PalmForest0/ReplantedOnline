@@ -33,8 +33,8 @@ internal static class RPC
         if (sender.AmHost)
         {
             MelonLogger.Msg("Game Starting...");
-            ReplantAPI.Core.ReplantAPI.GameplayActivity.VersusMode.SelectionSet = selectionSet;
-            ReplantAPI.Core.ReplantAPI.GameplayActivity.VersusMode.Phase = VersusPhase.ChoosePlantPacket;
+            Instances.GameplayActivity.VersusMode.SelectionSet = selectionSet;
+            Instances.GameplayActivity.VersusMode.Phase = VersusPhase.ChoosePlantPacket;
             Transitions.ToVersus();
         }
     }
@@ -43,11 +43,11 @@ internal static class RPC
     /// Sends an RPC to update the game state on all clients.
     /// </summary>
     /// <param name="gameState">The new game state to synchronize.</param>
-    internal static void SendUpdateGameState(GameState gameState)
+    internal static void SendUpdateGameState(GameState gameState, bool updateLocally = true)
     {
         var packetWriter = PacketWriter.Get();
         packetWriter.WriteByte((byte)gameState);
-        NetworkDispatcher.SendRpc(RpcType.UpdateGameState, packetWriter, true);
+        NetworkDispatcher.SendRpc(RpcType.UpdateGameState, packetWriter, updateLocally);
     }
 
     /// <summary>
@@ -65,14 +65,18 @@ internal static class RPC
             {
                 case GameState.Lobby:
                     break;
+                case GameState.HostChoosePlants:
+                    break;
+                case GameState.HostChooseZombie:
+                    break;
                 case GameState.PlantChoosingSeed:
-                    ReplantAPI.Core.ReplantAPI.GameplayActivity.VersusMode.Phase = VersusPhase.ChoosePlantPacket;
+                    Instances.GameplayActivity.VersusMode.Phase = VersusPhase.ChoosePlantPacket;
                     break;
                 case GameState.ZombieChoosingSeed:
-                    ReplantAPI.Core.ReplantAPI.GameplayActivity.VersusMode.Phase = VersusPhase.ChooseZombiePacket;
+                    Instances.GameplayActivity.VersusMode.Phase = VersusPhase.ChooseZombiePacket;
                     break;
                 case GameState.Gameplay:
-                    ReplantAPI.Core.ReplantAPI.GameplayActivity.VersusMode.Phase = VersusPhase.Gameplay;
+                    Instances.GameplayActivity.VersusMode.Phase = VersusPhase.Gameplay;
                     Transitions.ToGameplay();
                     break;
             }

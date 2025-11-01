@@ -3,7 +3,7 @@
 namespace ReplantedOnline.Patches.Versus;
 
 [HarmonyPatch]
-internal class VersusModePatch
+internal static class VersusModePatch
 {
     // TODO: Classes to look at to sync actions, Ahhhhhh I HATE Il2Cpp :(
     // VersusMode : ReloadedMode

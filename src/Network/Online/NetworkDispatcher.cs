@@ -132,7 +132,7 @@ internal class NetworkDispatcher
 
         if (packetCount > 0)
         {
-            MelonLogger.Msg($"[NetworkDispatcher] Processed {packetCount} packets this frame");
+            MelonLogger.Msg($"[NetworkDispatcher] Processed {packetCount} packets");
         }
     }
 

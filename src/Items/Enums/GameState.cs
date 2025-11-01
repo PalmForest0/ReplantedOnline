@@ -12,6 +12,16 @@ internal enum GameState
     Lobby,
 
     /// <summary>
+    /// Host is going to play as Plants.
+    /// </summary>
+    HostChoosePlants,
+
+    /// <summary>
+    /// Host is going to play as Zombies.
+    /// </summary>
+    HostChooseZombie,
+
+    /// <summary>
     /// The plant player is currently selecting their seeds.
     /// </summary>
     PlantChoosingSeed,

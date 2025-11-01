@@ -306,6 +306,8 @@ internal static class NetLobby
             var sent = SteamNetworking.SendP2PPacket(steamId, packetWriter.GetBytes(), packetWriter.Length);
             packetWriter.Recycle();
 
+            RPC.SendUpdateGameState(LobbyData.LastGameState, false);
+
             if (sent)
             {
                 MelonLogger.Msg($"[NetLobby] Successfully requested P2P session with {steamId}");
