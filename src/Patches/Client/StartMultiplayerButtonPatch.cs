@@ -9,8 +9,10 @@ internal static class StartMultiplayerButtonPatch
 {
     [HarmonyPatch(typeof(StartMultiplayerButton), nameof(StartMultiplayerButton._onButtonClicked))]
     [HarmonyPrefix]
-    internal static bool OnButtonClicked_Prefix()
+    internal static bool OnButtonClicked_Prefix(StartMultiplayerButton __instance)
     {
+        if (__instance.gameObject.name != "CoopVS_VS_Button") return true;
+
         // Intercept multiplayer button click - create our online lobby instead of default behavior
         NetLobby.CreateLobby();
 

@@ -65,7 +65,6 @@ internal static class NetLobby
     internal static void CreateLobby()
     {
         SteamMatchmaking.CreateLobbyAsync(MAX_LOBBY_SIZE);
-        MelonLogger.Msg("[NetLobby] Creating lobby...");
     }
 
     /// <summary>
