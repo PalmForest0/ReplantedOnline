@@ -72,6 +72,7 @@ internal static class NetLobby
     internal static void ResetLobby()
     {
         LobbyData.LastGameState = GameState.Lobby;
+        LobbyData.LocalDespawnAll();
         Transitions.ToVersus();
     }
 
@@ -81,6 +82,7 @@ internal static class NetLobby
     internal static void CreateLobby()
     {
         SteamMatchmaking.CreateLobbyAsync(MAX_LOBBY_SIZE);
+        Transitions.ToLoading();
     }
 
     /// <summary>
@@ -89,6 +91,7 @@ internal static class NetLobby
     internal static void JoinLobby(SteamId lobbyId)
     {
         SteamMatchmaking.JoinLobbyAsync(lobbyId);
+        Transitions.ToLoading();
         MelonLogger.Msg($"[NetLobby] Joining lobby: {lobbyId}");
     }
 
@@ -105,6 +108,7 @@ internal static class NetLobby
 
         MelonLogger.Msg($"[NetLobby] Leaving lobby {LobbyData.LobbyId}");
         SteamMatchmaking.Internal.LeaveLobby(LobbyData.LobbyId);
+        LobbyData.LocalDespawnAll();
         Transitions.ToMainMenu();
         LobbyData = default;
         MelonLogger.Msg("[NetLobby] Successfully left lobby");

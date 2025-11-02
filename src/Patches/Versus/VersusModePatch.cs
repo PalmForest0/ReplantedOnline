@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Il2CppReloaded.Gameplay;
 using Il2CppSource.DataModels;
 using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Modules;
@@ -18,6 +19,32 @@ internal static class VersusModePatch
     // Board : Widget
     // GameplayActivity : InjectableActivity
     // SeedChooserScreen : Widget
+
+    // Stop game from placing initial sunflower in vs
+    [HarmonyPatch(typeof(Board), nameof(Board.AddPlant))]
+    [HarmonyPrefix]
+    internal static bool AddPlant_Prefix()
+    {
+        if (NetLobby.AmInLobby() && Instances.GameplayActivity.VersusMode.m_versusTime < 1f)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Stop game from placing initial gravestones in vs
+    [HarmonyPatch(typeof(Challenge), nameof(Challenge.IZombiePlaceZombie))]
+    [HarmonyPrefix]
+    internal static bool IZombiePlaceZombie_Prefix()
+    {
+        if (NetLobby.AmInLobby() && Instances.GameplayActivity.VersusMode.m_versusTime < 1f)
+        {
+            return false;
+        }
+
+        return true;
+    }
 
     [HarmonyPatch(typeof(VersusPlayerModel), nameof(VersusPlayerModel.Confirm))]
     [HarmonyPostfix]

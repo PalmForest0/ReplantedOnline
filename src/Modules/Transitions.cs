@@ -1,4 +1,5 @@
 ﻿using Il2CppSource.Utils;
+using UnityEngine;
 
 namespace ReplantedOnline.Modules;
 
@@ -35,5 +36,13 @@ internal class Transitions
     internal static void ToChooseSeeds()
     {
         StateTransitionUtils.Transition("ChooseSeeds");
+    }
+
+    /// <summary>
+    /// Transitions to an loading state
+    /// </summary>
+    internal static void ToLoading()
+    {
+        GameObject.Find("FrontendPanels")?.SetActive(false);
     }
 }

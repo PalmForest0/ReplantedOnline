@@ -78,8 +78,14 @@ internal class NetLobbyData
         VersusManager.UpdateSideVisuals();
     }
 
+    /// <summary>
+    /// Updates the current game state and triggers relevant handlers if the state has changed
+    /// </summary>
+    /// <param name="gameState">The new game state to set</param>
     internal void UpdateGameState(GameState gameState)
     {
+        if (!NetLobby.AmLobbyHost()) return;
+
         if (LastGameState != gameState)
         {
             UpdateGameStateHandler.Send(gameState);
@@ -88,6 +94,13 @@ internal class NetLobbyData
         }
     }
 
+    /// <summary>
+    /// Gets the next available network ID for spawning network objects
+    /// </summary>
+    /// <returns>
+    /// The next available network ID, starting from 0 for hosts and 100000 for clients
+    /// to ensure ID separation between host and client spawned objects
+    /// </returns>
     internal uint GetNextNetworkId()
     {
         uint nextId = NetLobby.AmLobbyHost() ? 0U : 100000U;
@@ -96,5 +109,24 @@ internal class NetLobbyData
             nextId++;
         }
         return nextId;
+    }
+
+    /// <summary>
+    /// Locally despawns all network objects and clears the spawned objects dictionary
+    /// </summary>
+    /// <remarks>
+    /// This method destroys all GameObjects associated with network objects
+    /// and removes them from the NetworkClassSpawned collection
+    /// </remarks>
+    internal void LocalDespawnAll()
+    {
+        foreach (var kvp in NetworkClassSpawned.ToDictionary(k => k.Key, v => v.Value))
+        {
+            if (kvp.Value?.gameObject != null)
+            {
+                UnityEngine.Object.Destroy(kvp.Value.gameObject);
+            }
+            NetworkClassSpawned.Remove(kvp.Key);
+        }
     }
 }
