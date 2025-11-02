@@ -116,6 +116,15 @@ internal class PacketWriter
     }
 
     /// <summary>
+    /// Writes an 8-byte unsigned integer to the packet.
+    /// </summary>
+    /// <param name="value">The unsigned long value to write.</param>
+    internal void WriteULong(ulong value)
+    {
+        _data.AddRange(BitConverter.GetBytes(value));
+    }
+
+    /// <summary>
     /// Writes an 8-byte double-precision floating-point value to the packet.
     /// </summary>
     /// <param name="value">The double value to write.</param>

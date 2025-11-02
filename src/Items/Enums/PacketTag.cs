@@ -24,5 +24,25 @@ internal enum PacketTag
     /// <summary>
     /// Remote Procedure Call packet for executing methods on remote clients.
     /// </summary>
-    Rpc
+    Rpc,
+
+    /// <summary>
+    /// Packet used for spawning a network class.
+    /// </summary>
+    NetworkClassSpawn,
+
+    /// <summary>
+    /// Packet used for despawning a network class.
+    /// </summary>
+    NetworkClassDespawn,
+
+    /// <summary>
+    /// Packet used for syncing  a network class.
+    /// </summary>
+    NetworkClassSync,
+
+    /// <summary>
+    /// Packet used for P2P session establishment and maintenance on a network class.
+    /// </summary>
+    NetworkClassRpc,
 }

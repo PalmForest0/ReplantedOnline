@@ -14,6 +14,7 @@ internal static class VersusModePatch
     // VersusDataModel : DisposableObjectModel
     // VersusPlayerModel : DisposableObjectModel
     // VersusChooserSwapBinder : Binder
+    // VersusWinDataResetActivity : InjectableActivity
     // Board : Widget
     // GameplayActivity : InjectableActivity
     // SeedChooserScreen : Widget

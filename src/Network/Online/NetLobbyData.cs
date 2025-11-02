@@ -1,6 +1,7 @@
 ﻿using Il2CppSteamworks;
 using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Managers;
+using ReplantedOnline.Network.Object;
 using ReplantedOnline.Network.RPC.Handlers;
 
 namespace ReplantedOnline.Network.Online;
@@ -29,6 +30,11 @@ internal class NetLobbyData
     /// Gets or sets the dictionary of all connected clients in the lobby, keyed by their Steam ID.
     /// </summary>
     internal Dictionary<SteamId, SteamNetClient> AllClients = [];
+
+    /// <summary>
+    /// Gets or sets the dictionary of all network classes spawned.
+    /// </summary>
+    internal Dictionary<uint, NetworkClass> NetworkClassSpawned = [];
 
     /// <summary>
     /// Gets a HashSet of all banned players.
@@ -73,5 +79,15 @@ internal class NetLobbyData
             LastGameState = gameState;
             VersusManager.UpdateSideVisuals();
         }
+    }
+
+    internal uint GetNextNetworkId()
+    {
+        uint nextId = NetLobby.AmLobbyHost() ? 0U : 100000U;
+        while (NetworkClassSpawned.ContainsKey(nextId))
+        {
+            nextId++;
+        }
+        return nextId;
     }
 }

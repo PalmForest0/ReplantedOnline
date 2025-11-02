@@ -31,6 +31,22 @@ internal class PacketReader
     }
 
     /// <summary>
+    /// Retrieves a PacketReader instance from the pool or creates a new one, initialized with the remaining data from another packet reader.
+    /// </summary>
+    /// <param name="packet">The packet reader whose remaining data will be used.</param>
+    /// <returns>A PacketReader instance ready for reading the remaining data.</returns>
+    internal static PacketReader Get(PacketReader packet)
+    {
+        PacketReader reader;
+
+        reader = _pool.Count > 0 ? _pool.Dequeue() : new PacketReader();
+
+        reader._data = packet._data.Skip(packet._position).ToArray();
+        reader._position = 0;
+        return reader;
+    }
+
+    /// <summary>
     /// Reads the packet tag from the current position.
     /// </summary>
     /// <returns>The PacketTag identifying the packet type.</returns>
@@ -154,6 +170,21 @@ internal class PacketReader
             throw new IndexOutOfRangeException("Not enough data to read long");
 
         long result = BitConverter.ToInt64(_data, _position);
+        _position += 8;
+        return result;
+    }
+
+    /// <summary>
+    /// Reads an 8-byte unsigned integer from the packet.
+    /// </summary>
+    /// <returns>The unsigned long value.</returns>
+    /// <exception cref="IndexOutOfRangeException">Thrown when there's not enough data to read an unsigned long.</exception>
+    internal ulong ReadULong()
+    {
+        if (_position + 8 > _data.Length)
+            throw new IndexOutOfRangeException("Not enough data to read ulong");
+
+        ulong result = BitConverter.ToUInt64(_data, _position);
         _position += 8;
         return result;
     }
