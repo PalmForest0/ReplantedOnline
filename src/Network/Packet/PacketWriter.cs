@@ -166,4 +166,12 @@ internal class PacketWriter
         if (_pool.Count < MAX_POOL_SIZE)
             _pool.Enqueue(this);
     }
+
+    /// <summary>
+    /// CLear all data in the PacketWriter
+    /// </summary>
+    internal void Clear()
+    {
+        _data.Clear();
+    }
 }

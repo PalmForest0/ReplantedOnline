@@ -2,4 +2,11 @@
 
 internal class VersusModeNetworked : NetworkClass
 {
+    public void Start()
+    {
+        if (HasSpawned)
+        {
+
+        }
+    }
 }

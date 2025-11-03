@@ -17,6 +17,23 @@ namespace ReplantedOnline.Network.Online;
 internal static class NetworkDispatcher
 {
     /// <summary>
+    /// Spawns all Active network classes to a new client
+    /// </summary>
+    /// <param name="steamId">The Steam ID of the target client to receive the packet.</param>
+    internal static void SendNetworkClasssTo(SteamId steamId)
+    {
+        foreach (var networkClass in NetLobby.LobbyData.NetworkClassSpawned.Values)
+        {
+            if (networkClass.HasSpawned)
+            {
+                var packet = PacketWriter.Get();
+                NetworkSpawnPacket.SerializePacket(networkClass, packet);
+                SendTo(steamId, packet, PacketTag.NetworkClassSpawn);
+            }
+        }
+    }
+
+    /// <summary>
     /// Spawns a network class instance and broadcasts it to all connected clients.
     /// Initializes the network object with ownership and network ID before sending spawn packet.
     /// </summary>

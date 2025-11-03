@@ -234,6 +234,7 @@ internal static class NetLobby
         {
             MelonLogger.Msg($"[NetLobby] Host initiating P2P connection with new player {joinedPlayerId}");
             RequestP2PSessionWithPlayer(joinedPlayerId);
+            NetworkDispatcher.SendNetworkClasssTo(joinedPlayerId);
         }
     }
 
