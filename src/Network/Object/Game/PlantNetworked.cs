@@ -1,7 +1,7 @@
 ﻿using Il2CppInterop.Runtime.Attributes;
 using Il2CppReloaded.Gameplay;
+using ReplantedOnline.Helper;
 using ReplantedOnline.Network.Packet;
-using ReplantedOnline.Patches.Versus.NetworkSync;
 
 namespace ReplantedOnline.Network.Object.Game;
 
@@ -105,7 +105,7 @@ internal class PlantNetworked : NetworkClass
             SeedType = (SeedType)packetReader.ReadByte();
             ImitaterType = (SeedType)packetReader.ReadByte();
 
-            _Plant = SeedPacketSyncPatch.SpawnPlant(SeedType, ImitaterType, GridX, GridY, false);
+            _Plant = Utils.SpawnPlant(SeedType, ImitaterType, GridX, GridY, false);
             _Plant.DataID = PlantID;
 
             NetworkedPlants[_Plant] = this;

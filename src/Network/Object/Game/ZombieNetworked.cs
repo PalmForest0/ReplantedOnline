@@ -1,9 +1,9 @@
 ﻿using Il2CppInterop.Runtime.Attributes;
 using Il2CppReloaded.Gameplay;
 using MelonLoader;
+using ReplantedOnline.Helper;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Network.Packet;
-using ReplantedOnline.Patches.Versus.NetworkSync;
 using System.Collections;
 using UnityEngine;
 
@@ -142,7 +142,7 @@ internal class ZombieNetworked : NetworkClass
             ZombieID = (ZombieID)packetReader.ReadInt();
             ZombieType = (ZombieType)packetReader.ReadByte();
 
-            _Zombie = SeedPacketSyncPatch.SpawnZombie(ZombieType, GridX, GridY, false);
+            _Zombie = Utils.SpawnZombie(ZombieType, GridX, GridY, false);
             _Zombie.DataID = ZombieID;
 
             NetworkedZombies[_Zombie] = this;

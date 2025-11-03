@@ -1,11 +1,11 @@
 ﻿using Il2CppReloaded.Gameplay;
 using Il2CppTekly.PanelViews;
 using Il2CppTMPro;
+using ReplantedOnline.Helper;
 using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Patches.UI;
-using ReplantedOnline.Patches.Versus.NetworkSync;
 
 namespace ReplantedOnline.Managers;
 
@@ -19,11 +19,11 @@ internal static class VersusManager
         Instances.GameplayActivity.VersusMode.ClearBoard();
         if (VersusState.ZombieSide)
         {
-            SeedPacketSyncPatch.SpawnZombie(ZombieType.Target, 8, 0, true);
-            SeedPacketSyncPatch.SpawnZombie(ZombieType.Target, 8, 1, true);
-            SeedPacketSyncPatch.SpawnZombie(ZombieType.Target, 8, 2, true);
-            SeedPacketSyncPatch.SpawnZombie(ZombieType.Target, 8, 3, true);
-            SeedPacketSyncPatch.SpawnZombie(ZombieType.Target, 8, 4, true);
+            Utils.SpawnZombie(ZombieType.Target, 8, 0, true);
+            Utils.SpawnZombie(ZombieType.Target, 8, 1, true);
+            Utils.SpawnZombie(ZombieType.Target, 8, 2, true);
+            Utils.SpawnZombie(ZombieType.Target, 8, 3, true);
+            Utils.SpawnZombie(ZombieType.Target, 8, 4, true);
         }
     }
 
