@@ -44,6 +44,7 @@ internal class ZombieNetworked : NetworkClass
         this.SendRpc(0, writer, false);
     }
 
+    [HideFromIl2Cpp]
     private void HandleSetFollowerZombieIdRpc(PacketReader packetReader)
     {
         var index = packetReader.ReadInt();

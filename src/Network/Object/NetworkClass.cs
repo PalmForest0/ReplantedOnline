@@ -54,7 +54,6 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
         CreatePrefabs<CoinControllerNetworked>(1);
         CreatePrefabs<PlantNetworked>(2);
         CreatePrefabs<ZombieNetworked>(3);
-        CreatePrefabs<VersusModeNetworked>(4);
     }
 
     /// <summary>
@@ -91,7 +90,7 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
     /// Gets whether the local client is the owner of this network object.
     /// Determines if this client has authority to modify the object's state.
     /// </summary>
-    internal bool AmOwner => SteamNetClient.LocalClient?.SteamId == OwnerId;
+    internal bool AmOwner => SteamUser.Internal.GetSteamID() == OwnerId;
 
     /// <summary>
     /// Gets or sets the Steam ID of the client who owns this network object.
@@ -241,7 +240,7 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
                 networkClass.gameObject.SetActive(true);
                 networkClass.transform.SetParent(NetworkClassesObj.transform);
                 callback?.Invoke(networkClass);
-                NetworkDispatcher.Spawn(networkClass, SteamNetClient.LocalClient.SteamId);
+                NetworkDispatcher.Spawn(networkClass, SteamUser.Internal.GetSteamID());
                 networkClass.gameObject.name = $"{typeof(T).Name}({networkClass.NetworkId})";
                 return networkClass;
             }
@@ -253,7 +252,7 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
             T networkClass = new GameObject($"{typeof(T)}(???)").AddComponent<T>();
             networkClass.transform.SetParent(NetworkClassesObj.transform);
             callback?.Invoke(networkClass);
-            NetworkDispatcher.Spawn(networkClass, SteamNetClient.LocalClient.SteamId);
+            NetworkDispatcher.Spawn(networkClass, SteamUser.Internal.GetSteamID());
             networkClass.gameObject.name = $"{typeof(T).Name}({networkClass.NetworkId})";
             return networkClass;
         }

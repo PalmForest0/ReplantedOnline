@@ -38,6 +38,7 @@ internal class CoinControllerNetworked : NetworkClass
     }
 
     private bool Despawning;
+    [HideFromIl2Cpp]
     private IEnumerator CoDespawn()
     {
         // wait for desync
