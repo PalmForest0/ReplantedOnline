@@ -3,7 +3,7 @@ using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Network.Packet;
-using ReplantedOnline.Patches.Versus;
+using ReplantedOnline.Patches.Versus.NetworkSync;
 
 namespace ReplantedOnline.Network.RPC.Handlers;
 

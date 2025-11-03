@@ -3,7 +3,7 @@ using Il2CppReloaded.Gameplay;
 using MelonLoader;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Packet;
-using ReplantedOnline.Patches.Versus;
+using ReplantedOnline.Patches.Versus.NetworkSync;
 using System.Collections;
 using UnityEngine;
 
@@ -41,8 +41,11 @@ internal class CoinControllerNetworked : NetworkClass
     {
         // wait for desync
         yield return new WaitForSeconds(3f);
-        Despawn();
-        Destroy(gameObject);
+        if (this != null)
+        {
+            Despawn();
+            Destroy(gameObject);
+        }
     }
 
     public void OnDestroy()

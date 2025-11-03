@@ -1,50 +1,15 @@
 ﻿using HarmonyLib;
 using Il2CppReloaded.Gameplay;
-using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Network.Object;
 using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
-using ReplantedOnline.Network.Packet;
 using UnityEngine;
 
-namespace ReplantedOnline.Patches.Versus;
+namespace ReplantedOnline.Patches.Versus.NetworkSync;
 
 [HarmonyPatch]
-internal static class NetworkSyncPatch
+internal static class CoinSyncPatch
 {
-    [HarmonyPatch(typeof(SeedChooserScreen), nameof(SeedChooserScreen.ClickedSeedInChooser))]
-    [HarmonyPrefix]
-    internal static bool AddChosenSeedToBank_Prefix(SeedChooserScreen __instance, ChosenSeed theChosenSeed, int playerIndex)
-    {
-        // Skip if this is an internal recursive call to avoid infinite loops
-        if (InternalCallContext.IsInternalCall_ClickedSeedInChooser) return true;
-
-        if (NetLobby.AmInLobby())
-        {
-            __instance.ClickedSeedInChooserOriginal(theChosenSeed, playerIndex);
-            var packetWriter = PacketWriter.Get();
-            packetWriter.WriteByte((byte)theChosenSeed.mSeedType);
-            NetworkDispatcher.SendRpc(RpcType.ChooseSeed, packetWriter, true);
-        }
-
-        return true;
-    }
-
-    internal static void ClickedSeedInChooserOriginal(this SeedChooserScreen __instance, ChosenSeed theChosenSeed, int playerIndex)
-    {
-        InternalCallContext.IsInternalCall_ClickedSeedInChooser = true;
-        try
-        {
-            // This will trigger the prefix patch again, but the flag prevents recursion
-            __instance.ClickedSeedInChooser(theChosenSeed, playerIndex);
-        }
-        finally
-        {
-            // Always reset the flag, even if an exception occurs
-            InternalCallContext.IsInternalCall_ClickedSeedInChooser = false;
-        }
-    }
-
     [HarmonyPatch(typeof(Board), nameof(Board.AddCoin))]
     [HarmonyPrefix]
     internal static bool BoardAddCoin_Prefix(Board __instance, float theX, float theY, CoinType theCoinType, CoinMotion theCoinMotion, ref Coin __result)
@@ -66,7 +31,7 @@ internal static class NetworkSyncPatch
             var netClass = NetworkClass.SpawnNew<CoinControllerNetworked>(net =>
             {
                 net.coin = coin;
-                net.boardPos = new Vector2(theX, theY);
+                net.boardGridPos = new Vector2(theX, theY);
                 net.theCoinType = theCoinType;
                 net.theCoinMotion = theCoinMotion;
             });
@@ -99,7 +64,7 @@ internal static class NetworkSyncPatch
 
     [HarmonyPatch(typeof(Coin), nameof(Coin.Collect))]
     [HarmonyPrefix]
-    internal static bool CoinCollect_Prefix(Coin __instance, int playerIndex, bool spawnCoins = true)
+    internal static bool CoinCollect_Prefix(Coin __instance, int playerIndex, bool spawnCoins)
     {
         // Skip if this is an internal recursive call
         if (InternalCallContext.IsInternalCall_CoinCollect) return true;
@@ -139,15 +104,13 @@ internal static class NetworkSyncPatch
         }
     }
 
+
     /// <summary>
     /// Thread-safe context flags to prevent infinite recursion when calling patched methods from within patches.
     /// [ThreadStatic] ensures each thread has its own copy of these flags.
     /// </summary>
     private static class InternalCallContext
     {
-        [ThreadStatic]
-        public static bool IsInternalCall_ClickedSeedInChooser;
-
         [ThreadStatic]
         public static bool IsInternalCall_AddCoin;
 

@@ -18,7 +18,7 @@ internal class Transitions
     /// </summary>
     internal static void ToVersus()
     {
-        ToGameplay();
+        StateTransitionUtils.Transition("Gameplay");
         StateTransitionUtils.Transition("Versus");
     }
 

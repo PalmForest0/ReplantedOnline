@@ -36,8 +36,10 @@ internal static class VersusModePatch
     // Stop game from placing initial gravestones in vs
     [HarmonyPatch(typeof(Challenge), nameof(Challenge.IZombiePlaceZombie))]
     [HarmonyPrefix]
-    internal static bool IZombiePlaceZombie_Prefix()
+    internal static bool IZombiePlaceZombie_Prefix(ZombieType theZombieType)
     {
+        if (theZombieType == ZombieType.Target) return true;
+
         if (NetLobby.AmInLobby() && Instances.GameplayActivity.VersusMode.m_versusTime < 1f)
         {
             return false;
