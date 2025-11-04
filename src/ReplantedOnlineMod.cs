@@ -44,11 +44,6 @@ internal class ReplantedOnlineMod : MelonMod
             }
 
             LevelEntries.Init();
-
-            // THIS IS TO LOAD WHEN JOINING BUT NEEDS TO BE FIXED
-            LevelEntries.GetLevel("Level 1-1").m_gameMode = Il2CppReloaded.Gameplay.GameMode.Versus;
-            LevelEntries.GetLevel("Level 1-1").m_reloadedGameMode = Il2CppReloaded.Gameplay.ReloadedGameMode.Versus;
-
             NetLobby.Initialize();
         }
     }

@@ -18,6 +18,8 @@ internal class Transitions
     /// </summary>
     internal static void ToVersus()
     {
+        var level = LevelEntries.GetLevel("VS. Mode");
+        level.GetGameplayService().SetCurrentLevelData(level);
         StateTransitionUtils.Transition("Gameplay");
         StateTransitionUtils.Transition("Versus");
     }
