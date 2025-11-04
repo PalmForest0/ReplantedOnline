@@ -181,6 +181,11 @@ internal static class NetLobby
     /// <param name="data">The lobby data that was entered.</param>
     private static void OnLobbyEnteredCompleted(Lobby data)
     {
+        if (AmInLobby())
+        {
+            LeaveLobby();
+        }
+
         LobbyData ??= new(data.Id, data.Owner.Id);
 
         Transitions.ToVersus();
