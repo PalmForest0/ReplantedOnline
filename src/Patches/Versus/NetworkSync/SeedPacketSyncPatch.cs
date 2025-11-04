@@ -190,14 +190,14 @@ internal static class SeedPacketSyncPatch
             ZombieNetworked.NetworkedZombies[zombie] = netClass;
         }
 
-        // Fix layer issues
+        // Fix rendering issues
         if (zombieType is ZombieType.Gravestone)
         {
-            zombie.RenderOrder -= 1000;
+            zombie.RenderOrder -= 100 + (5 * (gridY + 1));
         }
         else if (zombieType is ZombieType.Target)
         {
-            zombie.RenderOrder -= 10000;
+            zombie.RenderOrder -= 200 + (10 * (gridY + 1));
         }
 
         return zombie;
