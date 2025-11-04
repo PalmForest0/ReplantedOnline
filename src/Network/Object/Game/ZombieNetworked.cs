@@ -154,7 +154,6 @@ internal class ZombieNetworked : NetworkClass
         packetWriter.WriteInt(_Zombie.mFlyingHealth);
         packetWriter.WriteInt(_Zombie.mHelmHealth);
         packetWriter.WriteInt(_Zombie.mShieldHealth);
-        packetWriter.WriteBool(_Zombie.IsMovingAtChilledSpeed());
         packetWriter.WriteFloat(_Zombie.mPosX);
 
         ClearDirtyBits();
@@ -185,9 +184,8 @@ internal class ZombieNetworked : NetworkClass
         _Zombie?.mFlyingHealth = packetReader.ReadInt();
         _Zombie?.mHelmHealth = packetReader.ReadInt();
         _Zombie?.mShieldHealth = packetReader.ReadInt();
-        var isMovingAtChilledSpeed = packetReader.ReadBool();
         var posX = packetReader.ReadFloat();
-        LarpPos(posX, isMovingAtChilledSpeed);
+        LarpPos(posX);
 
         ClearDirtyBits();
     }
@@ -201,15 +199,16 @@ internal class ZombieNetworked : NetworkClass
     /// Smoothly interpolates the zombie's position to the target position when distance threshold is exceeded.
     /// </summary>
     /// <param name="posX">The target X position to interpolate to</param>
-    /// <param name="isMovingAtChilledSpeed">If the zombie is slow</param>
-    private void LarpPos(float posX, bool isMovingAtChilledSpeed)
+    private void LarpPos(float posX)
     {
         if (_Zombie == null) return;
 
         float currentX = _Zombie.mPosX;
         float distance = Mathf.Abs(currentX - posX);
 
-        float threshold = !isMovingAtChilledSpeed ? 35f : 15f;
+        // Calculate threshold based on velocity (0.5 seconds of movement)
+        float threshold = Mathf.Abs(_Zombie.mVelX) * 0.5f;
+        threshold = Mathf.Clamp(threshold, 10f, 50f);
 
         if (distance > threshold)
         {
@@ -221,7 +220,7 @@ internal class ZombieNetworked : NetworkClass
 
             if (distance < 100f)
             {
-                larpToken = MelonCoroutines.Start(CoLarpPos(posX, isMovingAtChilledSpeed));
+                larpToken = MelonCoroutines.Start(CoLarpPos(posX));
             }
             else
             {
@@ -234,16 +233,18 @@ internal class ZombieNetworked : NetworkClass
     /// Coroutine that smoothly interpolates the zombie's position over time.
     /// </summary>
     /// <param name="targetX">The target X position to reach</param>
-    /// <param name="isMovingAtChilledSpeed">If the zombie is slow</param>
     [HideFromIl2Cpp]
-    private IEnumerator CoLarpPos(float targetX, bool isMovingAtChilledSpeed)
+    private IEnumerator CoLarpPos(float targetX)
     {
         if (this == null || _Zombie == null) yield break;
 
         float startX = _Zombie.mPosX;
         float distance = Mathf.Abs(targetX - startX);
 
-        float speed = !isMovingAtChilledSpeed ? 25f : 15f;
+        // Use zombie's current velocity for interpolation speed
+        float speed = Mathf.Abs(_Zombie.mVelX);
+        speed = Mathf.Clamp(speed, 10f, 40f);
+
         float duration = Mathf.Clamp(distance / speed, 0.1f, 2f);
 
         float elapsedTime = 0f;
@@ -267,7 +268,6 @@ internal class ZombieNetworked : NetworkClass
         larpToken = null;
     }
 
-    // Smoother interpolation curves
     private static float SmoothStep(float t)
     {
         return t * t * (3f - 2f * t);
