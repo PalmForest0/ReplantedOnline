@@ -95,7 +95,7 @@ internal class CoinControllerNetworked : NetworkClass
 
     private void HandleCollectRpc()
     {
-        _Coin.CollectOriginal(1, false);
+        _Coin.CollectOriginal(ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX, false);
     }
 
     internal void SendDieRpc()

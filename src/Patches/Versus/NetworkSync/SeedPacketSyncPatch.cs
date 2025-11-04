@@ -22,7 +22,7 @@ internal static class SeedPacketSyncPatch
         if (NetLobby.AmInLobby())
         {
             // Get the type of seed being planted
-            var seedType = __instance.Board.GetSeedTypeInCursor(0);
+            var seedType = __instance.Board.GetSeedTypeInCursor(ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
 
             // Check if the player is currently holding a plant in their cursor
             if (seedType != SeedType.None)
@@ -40,11 +40,11 @@ internal static class SeedPacketSyncPatch
 
                     // Get the cost of the seed and check if player has enough sun
                     var cost = packet.GetCost();
-                    if (__instance.Board.CanTakeSunMoney(cost, 0))
+                    if (__instance.Board.CanTakeSunMoney(cost, ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX))
                     {
                         // Mark the packet as used and deduct the sun cost
-                        packet.WasPlanted(0);
-                        __instance.Board.TakeSunMoney(cost, 0);
+                        packet.WasPlanted(ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
+                        __instance.Board.TakeSunMoney(cost, ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
                         __instance.Board.ClearCursor();
                         PlaceSeed(seedType, packet.mImitaterType, gridX, gridY, true);
                         SetSeedPacketCooldownHandler.Send(seedType);
@@ -77,15 +77,6 @@ internal static class SeedPacketSyncPatch
             && checkDancerGrid;
     }
 
-    /// <summary>
-    /// Places a seed (plant or zombie) at the specified grid position with network synchronization support
-    /// </summary>
-    /// <param name="seedType">Type of seed to plant</param>
-    /// <param name="imitaterType">Imitater plant type if applicable</param>
-    /// <param name="gridX">X grid coordinate (0-8 for plants, 0-8 for zombies)</param>
-    /// <param name="gridY">Y grid coordinate (0-4 for lawn rows)</param>
-    /// <param name="spawnOnNetwork">Whether to spawn the object on the network for multiplayer synchronization</param>
-    /// <returns>The created game object (plant or zombie)</returns>
     internal static ReloadedObject PlaceSeed(SeedType seedType, SeedType imitaterType, int gridX, int gridY, bool spawnOnNetwork)
     {
         // Check if this is a zombie seed (from I, Zombie mode)
@@ -106,15 +97,6 @@ internal static class SeedPacketSyncPatch
         }
     }
 
-    /// <summary>
-    /// Spawns a plant at the specified grid position with optional network synchronization
-    /// </summary>
-    /// <param name="seedType">Type of plant seed to spawn</param>
-    /// <param name="imitaterType">Imitater plant type if the plant is mimicking another plant</param>
-    /// <param name="gridX">X grid coordinate (0-8)</param>
-    /// <param name="gridY">Y grid coordinate (0-4)</param>
-    /// <param name="spawnOnNetwork">Whether to create a network controller for multiplayer sync</param>
-    /// <returns>The spawned Plant object</returns>
     internal static Plant SpawnPlant(SeedType seedType, SeedType imitaterType, int gridX, int gridY, bool spawnOnNetwork)
     {
         // Create the actual plant object in the game world using the original game method
@@ -143,14 +125,6 @@ internal static class SeedPacketSyncPatch
         return plant;
     }
 
-    /// <summary>
-    /// Spawns a zombie at the specified grid position with optional network synchronization
-    /// </summary>
-    /// <param name="zombieType">Type of zombie to spawn</param>
-    /// <param name="gridX">X grid coordinate (0-8)</param>
-    /// <param name="gridY">Y grid coordinate (0-4)</param>
-    /// <param name="spawnOnNetwork">Whether to create a network controller for multiplayer sync</param>
-    /// <returns>The spawned Zombie object</returns>
     internal static Il2CppReloaded.Gameplay.Zombie SpawnZombie(ZombieType zombieType, int gridX, int gridY, bool shakeBush, bool spawnOnNetwork)
     {
         // Determine if this zombie type rises from the ground (like grave zombies)

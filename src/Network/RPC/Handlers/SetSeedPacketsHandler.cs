@@ -33,6 +33,6 @@ internal class SetSeedPacketsHandler : RPCHandler
             seedTypes.Add(seedType);
         }
 
-        Utils.SetSeedPackets(1, [.. seedTypes]);
+        Utils.SetSeedPackets(ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX, [.. seedTypes]);
     }
 }

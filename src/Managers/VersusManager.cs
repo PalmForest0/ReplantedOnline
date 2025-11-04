@@ -170,14 +170,14 @@ internal static class VersusManager
         {
             if (amZombieSide)
             {
-                Instances.GameplayActivity.VersusMode.ZombiePlayerIndex = 0;
-                Instances.GameplayActivity.VersusMode.PlantPlayerIndex = 1;
+                Instances.GameplayActivity.VersusMode.ZombiePlayerIndex = ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX;
+                Instances.GameplayActivity.VersusMode.PlantPlayerIndex = ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX;
                 versusData.UpdateZombiesPlayer("input1", "input1", 0);
             }
             else
             {
-                Instances.GameplayActivity.VersusMode.ZombiePlayerIndex = 1;
-                Instances.GameplayActivity.VersusMode.PlantPlayerIndex = 0;
+                Instances.GameplayActivity.VersusMode.ZombiePlayerIndex = ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX;
+                Instances.GameplayActivity.VersusMode.PlantPlayerIndex = ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX;
                 versusData.UpdatePlantsPlayer("input1", "input1", 0);
             }
         }

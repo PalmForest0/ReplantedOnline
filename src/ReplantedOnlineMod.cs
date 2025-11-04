@@ -71,4 +71,10 @@ internal class ReplantedOnlineMod : MelonMod
             }
         }
     }
+
+    internal class Constants
+    {
+        internal const int LOCAL_PLAYER_INDEX = 0;
+        internal const int OPPONENT_PLAYER_INDEX = 1;
+    }
 }

@@ -22,6 +22,6 @@ internal class SetSeedPacketCooldownHandler : RPCHandler
     internal sealed override void Handle(SteamNetClient sender, PacketReader packetReader)
     {
         var seedType = (SeedType)packetReader.ReadByte();
-        Utils.SetSeedPacketCooldown(1, seedType);
+        Utils.SetSeedPacketCooldown(ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX, seedType);
     }
 }

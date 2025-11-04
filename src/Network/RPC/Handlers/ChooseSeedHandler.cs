@@ -32,14 +32,14 @@ internal class ChooseSeedHandler : RPCHandler
         {
             if (Instances.GameplayActivity.VersusMode.Phase is VersusPhase.ChoosePlantPacket)
             {
-                SeedChooserScreen.ClickedSeedInChooserOriginal(theChosenSeed, 1);
+                SeedChooserScreen.ClickedSeedInChooserOriginal(theChosenSeed, ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX);
             }
         }
         else
         {
             if (Instances.GameplayActivity.VersusMode.Phase is VersusPhase.ChooseZombiePacket)
             {
-                SeedChooserScreen.ClickedSeedInChooserOriginal(theChosenSeed, 1);
+                SeedChooserScreen.ClickedSeedInChooserOriginal(theChosenSeed, ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX);
             }
         }
     }

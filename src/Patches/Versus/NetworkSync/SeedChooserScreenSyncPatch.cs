@@ -22,6 +22,8 @@ internal static class SeedChooserScreenSyncPatch
             var packetWriter = PacketWriter.Get();
             packetWriter.WriteByte((byte)theChosenSeed.mSeedType);
             NetworkDispatcher.SendRpc(RpcType.ChooseSeed, packetWriter, true);
+
+            return false;
         }
 
         return true;
