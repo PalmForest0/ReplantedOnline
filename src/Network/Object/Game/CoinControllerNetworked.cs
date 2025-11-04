@@ -73,6 +73,9 @@ internal class CoinControllerNetworked : NetworkClass
             case 0:
                 HandleCollectRpc();
                 break;
+            case 1:
+                HandleDieRpc();
+                break;
         }
     }
 
@@ -84,6 +87,17 @@ internal class CoinControllerNetworked : NetworkClass
     private void HandleCollectRpc()
     {
         _Coin.CollectOriginal(1, false);
+    }
+
+    internal void SendDieRpc()
+    {
+        this.SendRpc(1, false);
+    }
+
+    [HideFromIl2Cpp]
+    private void HandleDieRpc()
+    {
+        _Coin.DieOriginal();
     }
 
     /// <summary>

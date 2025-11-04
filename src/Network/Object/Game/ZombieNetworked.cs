@@ -37,6 +37,11 @@ internal class ZombieNetworked : NetworkClass
     internal ZombieID ZombieID;
 
     /// <summary>
+    /// The speed of the zombie
+    /// </summary>
+    internal float ZombieSpeed;
+
+    /// <summary>
     /// The grid X coordinate where this zombie is located when spawning.
     /// </summary>
     internal int GridX;
@@ -139,6 +144,7 @@ internal class ZombieNetworked : NetworkClass
             // Set spawn info
             packetWriter.WriteInt(GridX);
             packetWriter.WriteInt(GridY);
+            packetWriter.WriteFloat(ZombieSpeed);
             packetWriter.WriteInt((int)ZombieID);
             packetWriter.WriteByte((byte)ZombieType);
             return;
@@ -162,11 +168,14 @@ internal class ZombieNetworked : NetworkClass
             // Read spawn info
             GridX = packetReader.ReadInt();
             GridY = packetReader.ReadInt();
+            ZombieSpeed = packetReader.ReadFloat();
             ZombieID = (ZombieID)packetReader.ReadInt();
             ZombieType = (ZombieType)packetReader.ReadByte();
 
             _Zombie = Utils.SpawnZombie(ZombieType, GridX, GridY, false);
             _Zombie.DataID = ZombieID;
+            _Zombie.mVelX = ZombieSpeed;
+            _Zombie.UpdateAnimSpeed();
 
             NetworkedZombies[_Zombie] = this;
             return;

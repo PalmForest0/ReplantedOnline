@@ -201,6 +201,7 @@ internal static class SeedPacketSyncPatch
                 net._Zombie = zombie;
                 net.ZombieID = zombie.DataID;
                 net.ZombieType = zombieType;
+                net.ZombieSpeed = zombie.mVelX;
                 net.GridX = gridX;
                 net.GridY = gridY;
             });

@@ -109,6 +109,37 @@ internal static class CoinSyncPatch
         }
     }
 
+    [HarmonyPatch(typeof(Coin), nameof(Coin.Die))]
+    [HarmonyPrefix]
+    internal static bool Die_Prefix(Coin __instance)
+    {
+        if (InternalCallContext.IsInternalCall_Die) return true;
+
+        if (NetLobby.AmInLobby())
+        {
+            __instance.GetNetworkedCoinController()?.SendDieRpc();
+            __instance.DieOriginal();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    internal static void DieOriginal(this Coin __instance)
+    {
+        InternalCallContext.IsInternalCall_Die = true;
+        try
+        {
+            __instance.Die();
+        }
+        finally
+        {
+            // Always reset the flag, even if an exception occurs
+            InternalCallContext.IsInternalCall_Die = false;
+        }
+    }
+
 
     /// <summary>
     /// Thread-safe context flags to prevent infinite recursion when calling patched methods from within patches.
@@ -121,5 +152,8 @@ internal static class CoinSyncPatch
 
         [ThreadStatic]
         public static bool IsInternalCall_CoinCollect;
+
+        [ThreadStatic]
+        public static bool IsInternalCall_Die;
     }
 }

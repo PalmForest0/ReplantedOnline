@@ -16,8 +16,6 @@ internal static class VersusManager
 {
     internal static void OnStart()
     {
-        Instances.GameplayActivity.VersusMode.ClearBoard();
-
         if (VersusState.ZombieSide)
         {
             Utils.SpawnZombie(ZombieType.Target, 8, 0, true);
