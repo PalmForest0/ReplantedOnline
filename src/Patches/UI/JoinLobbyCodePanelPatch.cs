@@ -55,7 +55,7 @@ internal static class JoinLobbyCodePanelPatch
 
         // Get reference to the input field and set up validation
         _reloadedInputField = GetComp<ReloadedInputField>("Canvas/Layout/Center/Rename/NameInputField");
-        _reloadedInputField.characterLimit = 6;
+        _reloadedInputField.characterLimit = MatchmakingManager.CODE_LENGTH;
         _reloadedInputField.onValueChanged.AddListener((Action<string>)((newValue) =>
         {
             // Filter input to only allow valid lobby code characters
@@ -76,7 +76,7 @@ internal static class JoinLobbyCodePanelPatch
             if (_reloadedInputField.m_Text.Length == MatchmakingManager.CODE_LENGTH)
             {
                 lobbyCodePanel.gameObject.SetActive(false);
-                MatchmakingManager.SearchLobbyByGameCode(_reloadedInputField.m_Text);
+                MatchmakingManager.SearchLobbyByGameCode(_reloadedInputField.m_Text.ToUpper());
             }
         });
 

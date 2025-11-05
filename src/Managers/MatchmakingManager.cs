@@ -10,7 +10,7 @@ namespace ReplantedOnline.Managers;
 
 internal class MatchmakingManager
 {
-    internal static readonly char[] CODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ23456789".ToCharArray();
+    internal static readonly char[] CODE_CHARS = "ABCDEFHIJKLMNPQRSTUVWXYZ".ToCharArray();
     internal static readonly int CODE_LENGTH = 6;
 
     /// <summary>
