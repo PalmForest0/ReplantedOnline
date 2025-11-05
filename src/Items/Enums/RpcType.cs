@@ -39,5 +39,5 @@ internal enum RpcType
     /// <summary>
     /// Add or remove an amount of money from the opposite player
     /// </summary>
-    SyncOpponentMoney
+    SetMoney
 }

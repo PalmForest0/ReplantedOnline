@@ -1,11 +1,13 @@
 ﻿using Il2CppReloaded.Gameplay;
 using ReplantedOnline.Helper;
+using ReplantedOnline.Items.Attributes;
 using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Network.Packet;
 
 namespace ReplantedOnline.Network.RPC.Handlers;
 
+[RegisterRPCHandler]
 internal class SetSeedPacketCooldownHandler : RPCHandler
 {
     /// <inheritdoc/>

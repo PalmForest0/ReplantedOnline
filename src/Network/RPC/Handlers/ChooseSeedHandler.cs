@@ -1,4 +1,5 @@
 ﻿using Il2CppReloaded.Gameplay;
+using ReplantedOnline.Items.Attributes;
 using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Online;
@@ -7,6 +8,7 @@ using ReplantedOnline.Patches.Versus.NetworkSync;
 
 namespace ReplantedOnline.Network.RPC.Handlers;
 
+[RegisterRPCHandler]
 internal class ChooseSeedHandler : RPCHandler
 {
     /// <inheritdoc/>
@@ -28,19 +30,6 @@ internal class ChooseSeedHandler : RPCHandler
         var theChosenSeed = SeedChooserScreen.GetChosenSeedFromType(seedType);
 
         // Use player index 1 (opposite player) when choosing seed for remote player
-        if (VersusState.PlantSide)
-        {
-            if (Instances.GameplayActivity.VersusMode.Phase is VersusPhase.ChoosePlantPacket)
-            {
-                SeedChooserScreen.ClickedSeedInChooserOriginal(theChosenSeed, ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX);
-            }
-        }
-        else
-        {
-            if (Instances.GameplayActivity.VersusMode.Phase is VersusPhase.ChooseZombiePacket)
-            {
-                SeedChooserScreen.ClickedSeedInChooserOriginal(theChosenSeed, ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX);
-            }
-        }
+        SeedChooserScreen.ClickedSeedInChooserOriginal(theChosenSeed, ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX);
     }
 }

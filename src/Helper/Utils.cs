@@ -85,28 +85,4 @@ internal static class Utils
         Instances.GameplayActivity.Board.SeedBanks[playerIndex].mSeedPackets
             .FirstOrDefault(seedPacket => seedPacket.mPacketType == seedType)?.WasPlanted(playerIndex);
     }
-
-    /// <summary>
-    /// Synchronizes the opponent's money by calculating the difference between local and expected values.
-    /// </summary>
-    /// <param name="playerIndex">The index of the player who spent sun money.</param>
-    /// <param name="current">The opponent's sun money amount before spending.</param>
-    /// <param name="amount">The amount of sun money spent by the opponent.</param>
-    internal static void SyncPlayerMoney(int playerIndex, int current, int amount)
-    {
-        var localCurrent = Instances.GameplayActivity.Board.mSunMoney[playerIndex];
-        var expected = current - amount; // What the opponent's money should be after spending
-        var difference = localCurrent - expected; // How much our local value differs
-
-        if (difference > 0)
-        {
-            // Our local value is too high, take the difference
-            Instances.GameplayActivity.Board.TakeSunMoneyOriginal(difference, playerIndex);
-        }
-        else if (difference < 0)
-        {
-            // Our local value is too low, add the difference (convert to positive)
-            Instances.GameplayActivity.Board.AddSunMoneyOriginal(-difference, playerIndex);
-        }
-    }
 }
