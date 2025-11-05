@@ -73,15 +73,22 @@ internal class SteamNetClient
     /// </summary>
     internal bool HasEstablishedP2P { get; set; }
 
+    /// <summary>
+    /// Gets the playerindex of the client
+    /// </summary>
+    internal int PlayerIndex
+    {
+        get
+        {
+            return AmLocal ? ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX : ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX;
+        }
+    }
+
+    /// <summary>
+    /// Gets if the player is on the zombies side
+    /// </summary>
     internal bool AmZombieSide()
     {
-        if (AmLocal)
-        {
-            return Instances.GameplayActivity.VersusMode.ZombiePlayerIndex == ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX;
-        }
-        else
-        {
-            return Instances.GameplayActivity.VersusMode.ZombiePlayerIndex == ReplantedOnlineMod.Constants.OPPONENT_PLAYER_INDEX;
-        }
+        return Instances.GameplayActivity.VersusMode.ZombiePlayerIndex == PlayerIndex;
     }
 }
