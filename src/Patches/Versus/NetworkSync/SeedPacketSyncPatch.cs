@@ -26,6 +26,10 @@ internal static class SeedPacketSyncPatch
             // Check if the player is currently holding a plant in their cursor
             if (seedType != SeedType.None)
             {
+                // Disable Gamepad usage until the no cooldown bug can be fixed
+                Instances.GameplayActivity.m_audioService.PlaySample(Sound.SOUND_BUZZER);
+                return false;
+
                 // Get the cursor position and convert it to grid coordinates
                 var gridX = __instance.m_cursor.m_gridX;
                 var gridY = __instance.m_cursor.m_gridY;
