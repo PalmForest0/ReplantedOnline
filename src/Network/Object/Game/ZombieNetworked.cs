@@ -134,7 +134,12 @@ internal sealed class ZombieNetworked : NetworkClass
     {
         var theDamage = packetReader.ReadInt();
         var damageFlags = (DamageFlags)packetReader.ReadByte();
-        _Zombie.TakeDamageOriginal(theDamage, damageFlags);
+
+        // Only die from rpc
+        if (((_Zombie.mBodyHealth + _Zombie.mHelmHealth + _Zombie.mShieldHealth) - theDamage) > 1)
+        {
+            _Zombie.TakeDamageOriginal(theDamage, damageFlags);
+        }
     }
 
     internal void SendDeathRpc(DamageFlags damageFlags)
