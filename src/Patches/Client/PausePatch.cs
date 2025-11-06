@@ -6,11 +6,11 @@ using ReplantedOnline.Network.Online;
 namespace ReplantedOnline.Patches.Client;
 
 [HarmonyPatch]
-internal class PausePatch
+internal static class PausePatch
 {
     [HarmonyPatch(typeof(PauseGameActivity), nameof(PauseGameActivity.ActiveStarted))]
     [HarmonyPrefix]
-    internal static bool PauseGameActivity_ActiveStarted_Prefix()
+    private static bool PauseGameActivity_ActiveStarted_Prefix()
     {
         // Check if the player is currently in an online lobby
         if (NetLobby.AmInLobby())
@@ -26,7 +26,7 @@ internal class PausePatch
 
     [HarmonyPatch(typeof(PauseMusicActivity), nameof(PauseMusicActivity.ActiveStarted))]
     [HarmonyPrefix]
-    internal static bool PauseMusicActivity_ActiveStarted_Prefix()
+    private static bool PauseMusicActivity_ActiveStarted_Prefix()
     {
         // Check if the player is currently in an online lobby
         if (NetLobby.AmInLobby())

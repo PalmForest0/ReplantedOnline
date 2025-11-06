@@ -14,7 +14,7 @@ internal static class ZombiePatch
     /// This fixes synchronization issues with Bungee Zombie spawning positions
     [HarmonyPatch(typeof(Zombie), nameof(Zombie.PickBungeeZombieTarget))]
     [HarmonyPrefix]
-    internal static bool PickBungeeZombieTarget_Prefix()
+    private static bool PickBungeeZombieTarget_Prefix()
     {
         // Disable random Bungee Zombie target selection in multiplayer
         // Target selection should be handled through network synchronization instead
@@ -30,7 +30,7 @@ internal static class ZombiePatch
     /// Only the zombie side should control dancer spawning in versus mode
     [HarmonyPatch(typeof(Zombie), nameof(Zombie.NeedsMoreBackupDancers))]
     [HarmonyPostfix]
-    internal static void NeedsMoreBackupDancers_Postfix(Zombie __instance, ref bool __result)
+    private static void NeedsMoreBackupDancers_Postfix(Zombie __instance, ref bool __result)
     {
         if (NetLobby.AmInLobby())
         {
@@ -46,7 +46,7 @@ internal static class ZombiePatch
     /// Handles zombies spawned during waves
     [HarmonyPatch(typeof(Board), nameof(Board.AddZombieInRow))]
     [HarmonyPrefix]
-    internal static bool AddZombieInRow_Prefix(Board __instance, ZombieType theZombieType, int theRow, ref Zombie __result)
+    private static bool AddZombieInRow_Prefix(Board __instance, ZombieType theZombieType, int theRow, ref Zombie __result)
     {
         // Only intercept during active gameplay in multiplayer
         if (NetLobby.AmInLobby() && VersusState.VersusPhase is VersusPhase.Gameplay or VersusPhase.SuddenDeath)
@@ -68,7 +68,7 @@ internal static class ZombiePatch
     /// Handles dancers spawned by Dancing Zombies
     [HarmonyPatch(typeof(Zombie), nameof(Zombie.SummonBackupDancer))]
     [HarmonyPrefix]
-    internal static bool SummonBackupDancer_Prefix(Zombie __instance, int theRow, int thePosX, ref ZombieID __result)
+    private static bool SummonBackupDancer_Prefix(Zombie __instance, int theRow, int thePosX, ref ZombieID __result)
     {
         if (NetLobby.AmInLobby())
         {
@@ -86,7 +86,7 @@ internal static class ZombiePatch
 
     [HarmonyPatch(typeof(Zombie), nameof(Zombie.WalkIntoHouse))]
     [HarmonyPostfix]
-    internal static void WalkIntoHouse_Postfix(Zombie __instance)
+    private static void WalkIntoHouse_Postfix(Zombie __instance)
     {
         // Notify all clients that this zombie is entering the house
         __instance.GetNetworkedZombie()?.SendEnteringHouseRpc();

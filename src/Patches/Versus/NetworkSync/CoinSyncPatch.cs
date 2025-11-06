@@ -14,7 +14,7 @@ internal static class CoinSyncPatch
 {
     [HarmonyPatch(typeof(Board), nameof(Board.AddCoin))]
     [HarmonyPrefix]
-    internal static bool BoardAddCoin_Prefix(Board __instance, float theX, float theY, CoinType theCoinType, CoinMotion theCoinMotion, ref Coin __result)
+    private static bool BoardAddCoin_Prefix(Board __instance, float theX, float theY, CoinType theCoinType, CoinMotion theCoinMotion, ref Coin __result)
     {
         // Skip if this is an internal recursive call to avoid infinite loops
         if (InternalCallContext.IsInternalCall_AddCoin) return true;
@@ -85,7 +85,7 @@ internal static class CoinSyncPatch
 
     [HarmonyPatch(typeof(Coin), nameof(Coin.Collect))]
     [HarmonyPrefix]
-    internal static bool CoinCollect_Prefix(Coin __instance, int playerIndex, bool spawnCoins)
+    private static bool CoinCollect_Prefix(Coin __instance, int playerIndex, bool spawnCoins)
     {
         // Skip if this is an internal recursive call
         if (InternalCallContext.IsInternalCall_CoinCollect) return true;

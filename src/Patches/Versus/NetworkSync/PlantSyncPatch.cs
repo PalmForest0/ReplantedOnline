@@ -15,7 +15,7 @@ internal static class PlantSyncPatch
     /// </summary>
     [HarmonyPatch(typeof(Plant), nameof(Plant.Die))]
     [HarmonyPrefix]
-    internal static bool Die_Prefix(Plant __instance)
+    private static bool Die_Prefix(Plant __instance)
     {
         // Skip network logic if this is an internal call (prevents infinite recursion)
         if (InternalCallContext.IsInternalCall_Die) return true;

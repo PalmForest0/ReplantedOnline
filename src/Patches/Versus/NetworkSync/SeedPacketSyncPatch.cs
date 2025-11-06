@@ -15,7 +15,7 @@ internal static class SeedPacketSyncPatch
 {
     [HarmonyPatch(typeof(GamepadCursorController), nameof(GamepadCursorController._onCursorConfirmed))]
     [HarmonyPrefix]
-    internal static bool _onCursorConfirmed_Prefix(GamepadCursorController __instance)
+    private static bool _onCursorConfirmed_Prefix(GamepadCursorController __instance)
     {
         if (NetLobby.AmInLobby())
         {
@@ -67,7 +67,7 @@ internal static class SeedPacketSyncPatch
     // This actually took hours to find out what's doing what :(
     [HarmonyPatch(typeof(GameplayActivity), nameof(GameplayActivity.OnMouseDownBG))]
     [HarmonyPrefix]
-    internal static bool OnMouseDownBG_Prefix(GameplayActivity __instance, int mouseButton, int playerIndex)
+    private static bool OnMouseDownBG_Prefix(GameplayActivity __instance, int mouseButton, int playerIndex)
     {
         if (NetLobby.AmInLobby())
         {

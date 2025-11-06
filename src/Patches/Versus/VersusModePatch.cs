@@ -23,7 +23,7 @@ internal static class VersusModePatch
 
     [HarmonyPatch(typeof(VersusMode), nameof(VersusMode.InitializeGameplay))]
     [HarmonyPostfix]
-    internal static void InitializeGameplay_Postfix()
+    private static void InitializeGameplay_Postfix()
     {
         VersusManager.OnStart();
     }
@@ -31,7 +31,7 @@ internal static class VersusModePatch
     // Stop game from placing initial sunflower in vs
     [HarmonyPatch(typeof(Board), nameof(Board.AddPlant))]
     [HarmonyPrefix]
-    internal static bool AddPlant_Prefix()
+    private static bool AddPlant_Prefix()
     {
         if (NetLobby.AmInLobby() && Instances.GameplayActivity.VersusMode.m_versusTime < 1f)
         {
@@ -44,7 +44,7 @@ internal static class VersusModePatch
     // Stop game from placing initial gravestones in vs
     [HarmonyPatch(typeof(Challenge), nameof(Challenge.IZombiePlaceZombie))]
     [HarmonyPrefix]
-    internal static bool IZombiePlaceZombie_Prefix(ZombieType theZombieType)
+    private static bool IZombiePlaceZombie_Prefix(ZombieType theZombieType)
     {
         if (NetLobby.AmInLobby() && Instances.GameplayActivity.VersusMode.m_versusTime < 1f)
         {
@@ -56,7 +56,7 @@ internal static class VersusModePatch
 
     [HarmonyPatch(typeof(VersusPlayerModel), nameof(VersusPlayerModel.Confirm))]
     [HarmonyPostfix]
-    internal static void Confirm_Postfix(VersusPlayerModel __instance)
+    private static void Confirm_Postfix(VersusPlayerModel __instance)
     {
         if (!NetLobby.AmLobbyHost()) return;
 
@@ -72,7 +72,7 @@ internal static class VersusModePatch
 
     [HarmonyPatch(typeof(VersusPlayerModel), nameof(VersusPlayerModel.Cancel))]
     [HarmonyPostfix]
-    internal static void Cancel_Postfix(VersusPlayerModel __instance)
+    private static void Cancel_Postfix(VersusPlayerModel __instance)
     {
         if (!NetLobby.AmLobbyHost()) return;
 

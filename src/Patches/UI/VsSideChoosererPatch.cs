@@ -19,7 +19,7 @@ internal static class VsSideChoosererPatch
 
     [HarmonyPatch(typeof(PanelViewContainer), nameof(PanelViewContainer.Awake))]
     [HarmonyPostfix]
-    internal static void Awake_Postfix(PanelViewContainer __instance)
+    private static void Awake_Postfix(PanelViewContainer __instance)
     {
         // Only modify UI if we're in an online lobby
         if (!NetLobby.AmInLobby()) return;

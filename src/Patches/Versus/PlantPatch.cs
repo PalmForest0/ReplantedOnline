@@ -12,7 +12,7 @@ internal static class PlantPatch
     [HarmonyPatch(typeof(Plant), nameof(Plant.FindTargetZombie))]
     [HarmonyPatch(typeof(Plant), nameof(Plant.FindSquashTarget))]
     [HarmonyPrefix]
-    internal static bool Update_Prefix(Plant __instance, ref Zombie __result, ref int __state)
+    private static bool Update_Prefix(Plant __instance, ref Zombie __result, ref int __state)
     {
         __state = __instance.mTargetZombieID;
 
@@ -43,7 +43,7 @@ internal static class PlantPatch
     [HarmonyPatch(typeof(Plant), nameof(Plant.FindTargetZombie))]
     [HarmonyPatch(typeof(Plant), nameof(Plant.FindSquashTarget))]
     [HarmonyPostfix]
-    internal static void Update_Postfix(Plant __instance, Zombie __result, int __state)
+    private static void Update_Postfix(Plant __instance, Zombie __result, int __state)
     {
         if (NetLobby.AmInLobby())
         {

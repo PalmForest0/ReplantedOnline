@@ -14,7 +14,7 @@ internal static class InstanceWrapperPatch
 {
     [HarmonyPatch(typeof(UiDataProviderActivity), nameof(UiDataProviderActivity.LoadingStarted))]
     [HarmonyPostfix]
-    internal static void UiDataProviderActivity_Postfix(UiDataProviderActivity __instance)
+    private static void UiDataProviderActivity_Postfix(UiDataProviderActivity __instance)
     {
         // Only capture the data provider for the main gameplay activity
         if (__instance.gameObject.name == "GameplayActivity")
@@ -36,14 +36,14 @@ internal static class InstanceWrapperPatch
 
     [HarmonyPatch(typeof(GameplayActivity), nameof(GameplayActivity.Awake))]
     [HarmonyPostfix]
-    internal static void GameplayActivity_Postfix(GameplayActivity __instance)
+    private static void GameplayActivity_Postfix(GameplayActivity __instance)
     {
         InstanceWrapper<GameplayActivity>.Instance = __instance;
     }
 
     [HarmonyPatch(typeof(PanelViewContainer), nameof(PanelViewContainer.Awake))]
     [HarmonyPostfix]
-    internal static void PanelViewContainer_Postfix(PanelViewContainer __instance)
+    private static void PanelViewContainer_Postfix(PanelViewContainer __instance)
     {
         if (__instance.name == "GlobalPanels(Clone)")
         {

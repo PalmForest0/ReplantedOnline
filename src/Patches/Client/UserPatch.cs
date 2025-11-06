@@ -8,7 +8,7 @@ internal static class UserPatch
 {
     [HarmonyPatch(typeof(UserService), nameof(UserService.IsCoopModeAvailable))]
     [HarmonyPostfix]
-    internal static void IsCoopModeAvailable_Postfix(ref bool __result)
+    private static void IsCoopModeAvailable_Postfix(ref bool __result)
     {
         // Force enable coop mode for online play
         __result = true;
