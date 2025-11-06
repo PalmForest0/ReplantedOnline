@@ -14,11 +14,6 @@ namespace ReplantedOnline.Network.Object.Game;
 internal sealed class PlantNetworked : NetworkClass
 {
     /// <summary>
-    /// Dictionary mapping plant instances to their networked counterparts for easy lookup.
-    /// </summary>
-    internal static Dictionary<Plant, PlantNetworked> NetworkedPlants = [];
-
-    /// <summary>
     /// The underlying plant instance that this networked object represents.
     /// </summary>
     internal Plant _Plant;
@@ -70,10 +65,7 @@ internal sealed class PlantNetworked : NetworkClass
     /// </summary>
     public void OnDestroy()
     {
-        if (_Plant != null)
-        {
-            NetworkedPlants.Remove(_Plant);
-        }
+        _Plant?.RemoveNetworkedLookup();
     }
 
     /// <summary>
@@ -159,8 +151,7 @@ internal sealed class PlantNetworked : NetworkClass
             ImitaterType = (SeedType)packetReader.ReadInt();
 
             _Plant = Utils.SpawnPlant(SeedType, ImitaterType, GridX, GridY, false);
-
-            NetworkedPlants[_Plant] = this;
+            _Plant.AddNetworkedLookup(this);
         }
     }
 }

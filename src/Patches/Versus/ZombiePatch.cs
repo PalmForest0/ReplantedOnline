@@ -2,6 +2,7 @@
 using Il2CppReloaded.Gameplay;
 using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
+using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Patches.Versus.NetworkSync;
 
@@ -89,6 +90,6 @@ internal static class ZombiePatch
     private static void WalkIntoHouse_Postfix(Zombie __instance)
     {
         // Notify all clients that this zombie is entering the house
-        __instance.GetNetworkedZombie()?.SendEnteringHouseRpc();
+        __instance.GetNetworked<ZombieNetworked>()?.SendEnteringHouseRpc();
     }
 }

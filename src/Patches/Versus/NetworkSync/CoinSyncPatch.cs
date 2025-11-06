@@ -35,7 +35,7 @@ internal static class CoinSyncPatch
                 var coin = __instance.AddCoinOriginal(theX, theY, theCoinType, theCoinMotion);
                 __result = coin;
 
-                var netClass = NetworkClass.SpawnNew<CoinControllerNetworked>(net =>
+                var netClass = NetworkClass.SpawnNew<CoinNetworked>(net =>
                 {
                     net._Coin = coin;
                     net.BoardGridPos = new Vector2(theX, theY);
@@ -44,7 +44,7 @@ internal static class CoinSyncPatch
                 });
 
                 // Track the relationship between coin and its network controller
-                CoinControllerNetworked.NetworkedCoinControllers[coin] = netClass;
+                coin.AddNetworkedLookup(netClass);
             }
             else
             {
@@ -94,7 +94,7 @@ internal static class CoinSyncPatch
         if (NetLobby.AmInLobby())
         {
             // If this coin has a network controller, notify other clients about collection
-            __instance.GetNetworkedCoinController()?.SendCollectRpc();
+            __instance.GetNetworked<CoinNetworked>()?.SendCollectRpc();
 
             // Call the original collection logic
             __instance.CollectOriginal(playerIndex, spawnCoins);
@@ -132,7 +132,7 @@ internal static class CoinSyncPatch
         {
             if (!NetLobby.AmLobbyHost()) return false;
 
-            __instance.GetNetworkedCoinController()?.SendDieRpc();
+            __instance.GetNetworked<CoinNetworked>()?.SendDieRpc();
             __instance.DieOriginal();
 
             return false;

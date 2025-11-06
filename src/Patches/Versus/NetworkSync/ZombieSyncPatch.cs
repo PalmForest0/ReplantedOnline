@@ -2,6 +2,7 @@
 using Il2CppReloaded.Gameplay;
 using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
+using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
 
 namespace ReplantedOnline.Patches.Versus.NetworkSync;
@@ -23,7 +24,7 @@ internal static class ZombieSyncPatch
 
             // Get the networked zombie representation and send death RPC to other players
             // Includes damage flags to communicate how the zombie died
-            __instance.GetNetworkedZombie()?.SendDeathRpc(theDamageFlags);
+            __instance.GetNetworked<ZombieNetworked>()?.SendDeathRpc(theDamageFlags);
 
             // Execute the original death animation logic locally
             __instance.PlayDeathAnimOriginal(theDamageFlags);
@@ -67,7 +68,7 @@ internal static class ZombieSyncPatch
             if (VersusState.ZombieSide) return false;
 
             __instance.TakeDamageOriginal(theDamage, theDamageFlags);
-            __instance.GetNetworkedZombie()?.SendTakeDamageRpc(theDamage, theDamageFlags);
+            __instance.GetNetworked<ZombieNetworked>()?.SendTakeDamageRpc(theDamage, theDamageFlags);
 
             return false;
         }

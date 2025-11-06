@@ -1,5 +1,6 @@
 ﻿using Il2CppInterop.Runtime.Attributes;
 using Il2CppReloaded.Gameplay;
+using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Network.Packet;
@@ -9,17 +10,11 @@ using UnityEngine;
 namespace ReplantedOnline.Network.Object.Game;
 
 /// <summary>
-/// Represents a networked coin controller that manages synchronization of coin entities
+/// Represents a networked coin that manages synchronization of coin entities
 /// across connected clients, including coin collection, despawning, and state management.
 /// </summary>
-internal sealed class CoinControllerNetworked : NetworkClass
+internal sealed class CoinNetworked : NetworkClass
 {
-    /// <summary>
-    /// Global dictionary tracking all active coins and their associated network controllers.
-    /// Used to find network controllers when coins need to send RPCs or be synchronized.
-    /// </summary>
-    internal static Dictionary<Coin, CoinControllerNetworked> NetworkedCoinControllers = [];
-
     /// <summary>
     /// The underlying coin instance that this networked controller manages.
     /// </summary>
@@ -68,10 +63,7 @@ internal sealed class CoinControllerNetworked : NetworkClass
     /// </summary>
     public void OnDestroy()
     {
-        if (_Coin != null)
-        {
-            NetworkedCoinControllers.Remove(_Coin);
-        }
+        _Coin.RemoveNetworkedLookup();
     }
 
     [HideFromIl2Cpp]
@@ -145,7 +137,7 @@ internal sealed class CoinControllerNetworked : NetworkClass
             _Coin = Instances.GameplayActivity.Board.AddCoinOriginal(BoardGridPos.x, BoardGridPos.y, TheCoinType, TheCoinMotion);
 
             // Register this network controller with the newly created coin
-            NetworkedCoinControllers[_Coin] = this;
+            _Coin.AddNetworkedLookup(this);
         }
     }
 }

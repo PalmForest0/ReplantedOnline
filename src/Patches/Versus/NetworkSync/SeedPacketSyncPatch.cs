@@ -2,6 +2,7 @@
 using Il2CppReloaded.Gameplay;
 using Il2CppReloaded.TreeStateActivities;
 using Il2CppSource.Controllers;
+using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Object;
 using ReplantedOnline.Network.Object.Game;
@@ -33,25 +34,27 @@ internal static class SeedPacketSyncPatch
                 if (CanPlace(seedType, gridX, gridY))
                 {
                     // Find the seed packet from the seed bank that matches the seed type
-                    var packet = __instance.Board.mSeedBank.SeedPackets.FirstOrDefault(packet => packet.mPacketType == seedType);
+                    var seedPacket = __instance.GetFirstSelectedSeedPack();
 
                     // Get the cost of the seed and check if player has enough sun
-                    var cost = packet.GetCost();
+                    var cost = seedPacket.GetCost();
                     if (__instance.Board.CanTakeSunMoney(cost, ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX))
                     {
                         // Mark the packet as used and deduct the sun cost
-                        packet.WasPlanted(ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
+                        seedPacket.WasPlanted(ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX); // TODO: Fix no cooldown on gamepad
                         __instance.Board.TakeSunMoney(cost, ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
-                        __instance.Board.ClearCursor();
-                        PlaceSeed(seedType, packet.mImitaterType, gridX, gridY, true);
+                        PlaceSeed(seedType, seedPacket.mImitaterType, gridX, gridY, true);
                         Instances.GameplayActivity.m_audioService.PlaySample(Sound.SOUND_PLANT);
+                    }
+                    else
+                    {
+                        Instances.GameplayActivity.m_audioService.PlaySample(Sound.SOUND_BUZZER);
                     }
 
                     // Return false to skip the original method since we've handled planting
                     return false;
                 }
 
-                // If planting is not valid, play buzzer sound
                 Instances.GameplayActivity.m_audioService.PlaySample(Sound.SOUND_BUZZER);
 
                 // Return false to skip original method (invalid placement)
@@ -86,18 +89,22 @@ internal static class SeedPacketSyncPatch
                 if (CanPlace(seedType, gridX, gridY))
                 {
                     // Find the seed packet from the seed bank that matches the seed type
-                    var packet = __instance.Board.mSeedBank.SeedPackets.FirstOrDefault(packet => packet.mPacketType == seedType);
+                    var seedPacket = __instance.Board.SeedBanks.LocalItem().SeedPackets.FirstOrDefault(packet => packet.mPacketType == seedType);
 
                     // Get the cost of the seed and check if player has enough sun
-                    var cost = packet.GetCost();
+                    var cost = seedPacket.GetCost();
                     if (__instance.Board.CanTakeSunMoney(cost, ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX))
                     {
                         // Mark the packet as used and deduct the sun cost
-                        packet.WasPlanted(ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
+                        seedPacket.WasPlanted(ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
                         __instance.Board.TakeSunMoney(cost, ReplantedOnlineMod.Constants.LOCAL_PLAYER_INDEX);
                         __instance.Board.ClearCursor();
-                        PlaceSeed(seedType, packet.mImitaterType, gridX, gridY, true);
+                        PlaceSeed(seedType, seedPacket.mImitaterType, gridX, gridY, true);
                         Instances.GameplayActivity.m_audioService.PlaySample(Sound.SOUND_PLANT);
+                    }
+                    else
+                    {
+                        Instances.GameplayActivity.m_audioService.PlaySample(Sound.SOUND_BUZZER);
                     }
 
                     // Return false to skip the original method since we've handled planting
@@ -166,7 +173,7 @@ internal static class SeedPacketSyncPatch
                 net.GridX = gridX;
                 net.GridY = gridY;
             }, VersusState.PlantSteamId);
-            PlantNetworked.NetworkedPlants[plant] = netClass;
+            plant.AddNetworkedLookup(netClass);
         }
 
         return plant;
@@ -234,7 +241,7 @@ internal static class SeedPacketSyncPatch
                 net.GridY = gridY;
             }, VersusState.PlantSteamId);
 
-            ZombieNetworked.NetworkedZombies[zombie] = netClass;
+            zombie.AddNetworkedLookup(netClass);
         }
 
         // Fix rendering issues

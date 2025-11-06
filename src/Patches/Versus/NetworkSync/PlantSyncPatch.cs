@@ -2,6 +2,7 @@
 using Il2CppReloaded.Gameplay;
 using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
+using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
 
 namespace ReplantedOnline.Patches.Versus.NetworkSync;
@@ -26,7 +27,7 @@ internal static class PlantSyncPatch
             if (VersusState.ZombieSide) return false;
 
             // Get the networked plant representation and send death RPC to other players
-            __instance.GetNetworkedPlant()?.SendDieRpc();
+            __instance.GetNetworked<PlantNetworked>()?.SendDieRpc();
 
             // Execute the original die method logic locally
             __instance.DieOriginal();

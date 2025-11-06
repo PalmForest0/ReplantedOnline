@@ -2,6 +2,7 @@
 using Il2CppReloaded.Gameplay;
 using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
+using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
 
 namespace ReplantedOnline.Patches.Versus;
@@ -51,7 +52,7 @@ internal static class PlantPatch
             {
                 if (__instance.mTargetZombieID != __state)
                 {
-                    __instance.GetNetworkedPlant().SendTargetZombie(__result.GetNetworkedZombie());
+                    __instance.GetNetworked<PlantNetworked>().SendTargetZombie(__result.GetNetworked<ZombieNetworked>());
                 }
             }
         }

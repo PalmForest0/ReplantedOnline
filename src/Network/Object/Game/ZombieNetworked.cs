@@ -18,11 +18,6 @@ namespace ReplantedOnline.Network.Object.Game;
 internal sealed class ZombieNetworked : NetworkClass
 {
     /// <summary>
-    /// Dictionary mapping zombie instances to their networked counterparts for easy lookup.
-    /// </summary>
-    internal static Dictionary<Zombie, ZombieNetworked> NetworkedZombies = [];
-
-    /// <summary>
     /// The underlying zombie instance that this networked object represents.
     /// </summary>
     internal Zombie _Zombie;
@@ -57,10 +52,7 @@ internal sealed class ZombieNetworked : NetworkClass
     /// </summary>
     public void OnDestroy()
     {
-        if (_Zombie != null)
-        {
-            NetworkedZombies.Remove(_Zombie);
-        }
+        _Zombie?.RemoveNetworkedLookup();
     }
 
 
@@ -204,7 +196,7 @@ internal sealed class ZombieNetworked : NetworkClass
             _Zombie.mVelX = ZombieSpeed;
             _Zombie.UpdateAnimSpeed();
 
-            NetworkedZombies[_Zombie] = this;
+            _Zombie.AddNetworkedLookup(this);
             return;
         }
 

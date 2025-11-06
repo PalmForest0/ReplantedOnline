@@ -4,6 +4,7 @@ using Il2CppTMPro;
 using ReplantedOnline.Helper;
 using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Modules;
+using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Patches.UI;
 
@@ -24,7 +25,7 @@ internal static class VersusManager
             var zombie = kvp.Key;
             if (zombie.mZombieType == ZombieType.Target)
             {
-                if (zombie.GetNetworkedZombie() == null)
+                if (zombie.GetNetworked<ZombieNetworked>() == null)
                 {
                     zombie.DieDeserialize();
                 }
