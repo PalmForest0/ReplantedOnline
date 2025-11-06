@@ -226,7 +226,7 @@ internal sealed class ZombieNetworked : NetworkClass
         float distance = Mathf.Abs(currentX - posX);
 
         // Calculate threshold based on velocity (0.5 seconds of movement)
-        float threshold = Mathf.Abs(_Zombie.mVelX) * 0.5f;
+        float threshold = Mathf.Abs(_Zombie.mVelX) * 0.3f;
         threshold = Mathf.Clamp(threshold, 10f, 50f);
 
         if (distance > threshold)
