@@ -91,7 +91,7 @@ internal sealed class PlantNetworked : NetworkClass
                 HandleDieRpc();
                 break;
             case 1:
-            HandleTargetZombie(packetReader);
+                HandleTargetZombie(packetReader);
                 break;
         }
     }
