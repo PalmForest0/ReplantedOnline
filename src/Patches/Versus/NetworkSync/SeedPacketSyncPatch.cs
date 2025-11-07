@@ -133,7 +133,7 @@ internal static class SeedPacketSyncPatch
         var checkDancerGrid = seedType != SeedType.ZombieDancer || (gridY != 0 && gridY != 4);
 
         return Instances.GameplayActivity.Board.CanPlantAt(gridX, gridY, seedType) == PlantingReason.Ok
-            && VersusState.VersusPhase is VersusPhase.Gameplay or VersusPhase.SuddenDeath
+            && VersusState.VersusPhase is (VersusPhase.Gameplay or VersusPhase.SuddenDeath)
             && checkDancerGrid;
     }
 

@@ -38,7 +38,7 @@ internal sealed class CoinNetworked : NetworkClass
     public void Start()
     {
         // End game
-        if (_Coin?.mType is CoinType.VersusTrophyPlant or CoinType.VersusTrophyZombie)
+        if (_Coin?.mType is (CoinType.VersusTrophyPlant or CoinType.VersusTrophyZombie))
         {
             NetLobby.ResetLobby();
         }

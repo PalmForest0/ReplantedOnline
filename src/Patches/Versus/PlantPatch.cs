@@ -22,7 +22,7 @@ internal static class PlantPatch
             // Sync the target in the network
             if (VersusState.ZombieSide)
             {
-                if (__instance.mSeedType is SeedType.Potatomine or SeedType.Chomper or SeedType.Squash)
+                if (__instance.mSeedType is (SeedType.Potatomine or SeedType.Chomper or SeedType.Squash))
                 {
                     if (__instance.mTargetZombieID != 0)
                     {

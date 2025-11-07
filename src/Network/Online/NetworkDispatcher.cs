@@ -118,7 +118,7 @@ internal static class NetworkDispatcher
     /// <param name="sendType">The send type of the packet.</param>
     internal static void SendPacketTo(SteamId steamId, PacketWriter packetWriter, PacketTag tag, P2PSend sendType)
     {
-        if (sendType is P2PSend.Unreliable or P2PSend.UnreliableNoDelay)
+        if (sendType is (P2PSend.Unreliable or P2PSend.UnreliableNoDelay))
         {
             throw new NotImplementedException($"{Enum.GetName(sendType)} Send Type is not supported");
         }
@@ -147,7 +147,7 @@ internal static class NetworkDispatcher
     /// <param name="sendType">The send type of the packet.</param>
     internal static void SendPacket(PacketWriter packetWriter, bool receiveLocally, PacketTag tag, P2PSend sendType)
     {
-        if (sendType is P2PSend.Unreliable or P2PSend.UnreliableNoDelay)
+        if (sendType is (P2PSend.Unreliable or P2PSend.UnreliableNoDelay))
         {
             throw new NotImplementedException($"{Enum.GetName(sendType)} Send Type is not supported");
         }
