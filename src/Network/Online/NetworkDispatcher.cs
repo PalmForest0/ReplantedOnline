@@ -7,6 +7,7 @@ using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Object;
 using ReplantedOnline.Network.Packet;
 using ReplantedOnline.Network.RPC;
+using System.Collections;
 using UnityEngine;
 
 namespace ReplantedOnline.Network.Online;
@@ -324,6 +325,7 @@ internal static class NetworkDispatcher
     private static void StreamlineNetworkClassSpawn(SteamNetClient sender, PacketReader packetReader)
     {
         var spawnPacket = NetworkSpawnPacket.DeserializePacket(packetReader);
+
         if (spawnPacket.PrefabId == NetworkClass.NO_PREFAB_ID)
         {
             var networkClass = new GameObject("???").AddComponent<NetworkClass>();
@@ -390,19 +392,32 @@ internal static class NetworkDispatcher
     /// <param name="packetReader">The packet reader containing synchronization data.</param>
     private static void StreamlineNetworkClassSync(SteamNetClient sender, PacketReader packetReader)
     {
+        MelonCoroutines.Start(CoWaitForNetworkClassSync(sender, packetReader));
+    }
+
+    private static IEnumerator CoWaitForNetworkClassSync(SteamNetClient sender, PacketReader packetReader)
+    {
+        packetReader = PacketReader.Get(packetReader);
         uint networkId = packetReader.ReadUInt();
         uint syncedBits = packetReader.ReadUInt();
-        if (NetLobby.LobbyData.NetworkClassSpawned.TryGetValue(networkId, out var networkClass))
-        {
-            if (networkClass.OwnerId != sender.SteamId) return;
 
-            networkClass.SyncedBits.SyncedDirtyBits = syncedBits;
-            networkClass.Deserialize(packetReader, false);
-            MelonLogger.Msg($"[NetworkDispatcher] Synced NetworkClass from {sender.Name}: {networkId}");
-        }
-        else
+        while (NetLobby.LobbyData != null)
         {
-            MelonLogger.Warning($"[NetworkDispatcher] Failed to sync NetworkClass: ID {networkId} not found");
+            if (NetLobby.LobbyData.NetworkClassSpawned.TryGetValue(networkId, out var networkClass))
+            {
+                if (networkClass.OwnerId != sender.SteamId)
+                {
+                    MelonLogger.Warning($"[NetworkDispatcher] Sync rejected: {sender.Name} is not owner of NetworkClass {networkId}");
+                    yield break;
+                }
+
+                networkClass.SyncedBits.SyncedDirtyBits = syncedBits;
+                networkClass.Deserialize(packetReader, false);
+                MelonLogger.Msg($"[NetworkDispatcher] Synced NetworkClass from {sender.Name}: {networkId}");
+                yield break;
+            }
+
+            yield return null;
         }
     }
 
@@ -414,16 +429,25 @@ internal static class NetworkDispatcher
     /// <param name="packetReader">The packet reader containing RPC data.</param>
     private static void StreamlineNetworkClassRpc(SteamNetClient sender, PacketReader packetReader)
     {
+        MelonCoroutines.Start(CoWaitForNetworkClass(sender, packetReader));
+    }
+
+    private static IEnumerator CoWaitForNetworkClass(SteamNetClient sender, PacketReader packetReader)
+    {
+        packetReader = PacketReader.Get(packetReader);
         byte rpcId = packetReader.ReadByte();
         uint networkId = packetReader.ReadUInt();
-        if (NetLobby.LobbyData.NetworkClassSpawned.TryGetValue(networkId, out var networkClass))
+
+        while (NetLobby.LobbyData != null)
         {
-            MelonLogger.Msg($"[NetworkDispatcher] Processing NetworkClass RPC from {sender.Name}: {rpcId} for NetworkId: {networkId}");
-            networkClass.HandleRpc(sender, rpcId, packetReader);
-        }
-        else
-        {
-            MelonLogger.Warning($"[NetworkDispatcher] Failed to process NetworkClass RPC: ID {networkId} not found");
+            if (NetLobby.LobbyData.NetworkClassSpawned.TryGetValue(networkId, out var networkClass))
+            {
+                MelonLogger.Msg($"[NetworkDispatcher] Processing NetworkClass RPC from {sender.Name}: {rpcId} for NetworkId: {networkId}");
+                networkClass.HandleRpc(sender, rpcId, packetReader);
+                yield break;
+            }
+
+            yield return null;
         }
     }
 }

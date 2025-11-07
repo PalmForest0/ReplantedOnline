@@ -1,6 +1,5 @@
 ﻿using Il2CppInterop.Runtime.Injection;
 using Il2CppSteamworks;
-using Il2CppSteamworks.Data;
 using MelonLoader;
 using ReplantedOnline.Items.Attributes;
 using ReplantedOnline.Modules;
