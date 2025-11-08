@@ -47,7 +47,11 @@ internal static class VersusManager
 
     internal static void EndGame(GameObject focus, bool didPlantsWon)
     {
-        if (focus == null) return;
+        if (focus == null)
+        {
+            MelonLogger.Error("Can not end game, Focus gameobject is null!");
+            return;
+        }
 
         if (didPlantsWon)
         {
@@ -65,7 +69,7 @@ internal static class VersusManager
 
     private static IEnumerator CoEndGame()
     {
-        yield return new WaitForSeconds(Instances.GameplayActivity.VersusMode.m_focusCircleController.m_duration + 1f);
+        yield return new WaitForSeconds(3f);
         if (NetLobby.AmInLobby())
         {
             NetLobby.ResetLobby();

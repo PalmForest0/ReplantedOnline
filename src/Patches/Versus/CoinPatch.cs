@@ -3,14 +3,14 @@ using Il2CppReloaded.Gameplay;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Online;
 
-namespace ReplantedOnline.Patches.Versus.NetworkSync;
+namespace ReplantedOnline.Patches.Versus;
 
 [HarmonyPatch]
 internal static class CoinPatch
 {
     [HarmonyPatch(typeof(Board), nameof(Board.AddCoin))]
     [HarmonyPrefix]
-    private static bool BoardAddCoin_Prefix(Board __instance, float theX, float theY, CoinType theCoinType, CoinMotion theCoinMotion)
+    private static bool BoardAddCoin_Prefix(CoinType theCoinType)
     {
         // Only handle network synchronization when in a multiplayer lobby
         if (NetLobby.AmInLobby())

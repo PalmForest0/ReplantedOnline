@@ -81,7 +81,7 @@ internal sealed class ZombieNetworked : NetworkClass
             }
             else if (!IsDespawning)
             {
-                DespawnAndDestroyWithDelay(5f);
+                DespawnAndDestroyWithDelay(10f);
             }
         }
         else

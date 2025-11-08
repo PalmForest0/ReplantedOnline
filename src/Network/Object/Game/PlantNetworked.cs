@@ -48,7 +48,7 @@ internal sealed class PlantNetworked : NetworkClass
             }
             else if (!IsDespawning)
             {
-                DespawnAndDestroyWithDelay(3f);
+                DespawnAndDestroyWithDelay(6f);
             }
         }
         else

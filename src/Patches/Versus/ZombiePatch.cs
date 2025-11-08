@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Il2CppReloaded.Gameplay;
 using ReplantedOnline.Helper;
+using ReplantedOnline.Managers;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
@@ -92,7 +93,7 @@ internal static class ZombiePatch
         if (VersusState.PlantSide)
         {
             __instance.GetNetworked<ZombieNetworked>()?.SendEnteringHouseRpc();
-            __instance.GetNetworked<ZombieNetworked>()?.HandleEnteringHouseRpc();
+            VersusManager.EndGame(__instance.mController?.gameObject, false);
         }
 
         return false;
