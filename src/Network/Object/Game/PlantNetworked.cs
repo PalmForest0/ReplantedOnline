@@ -82,7 +82,9 @@ internal sealed class PlantNetworked : NetworkClass
         switch (rpcId)
         {
             case 0:
-                HandleDieRpc();
+                {
+                    HandleDieRpc();
+                }
                 break;
         }
     }

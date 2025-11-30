@@ -109,8 +109,9 @@ internal static class VersusManager
         plantPlayer2.fontSize = 100f;
 
         playerList = UnityEngine.Object.Instantiate(plantPlayer1, vsPanelView.transform.Find($"Canvas/Layout/Center/Panel"));
-        playerList.transform.localPosition = new Vector3(-15f, -100f, 0f);
+        playerList.transform.localPosition = new Vector3(-15f, 0f, 0f);
         playerList.gameObject.name = "PlayerList";
+        playerList.color = Color.white;
 
         pickSides = vsPanelView.transform.Find($"Canvas/Layout/Center/Panel/Header/HeaderLabel")?.GetComponentInChildren<TextMeshProUGUI>(true);
     }

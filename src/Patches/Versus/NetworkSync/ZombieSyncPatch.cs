@@ -27,7 +27,10 @@ internal static class ZombieSyncPatch
             __instance.GetNetworked<ZombieNetworked>()?.SendDeathRpc(theDamageFlags);
 
             // Execute the original death animation logic locally
-            __instance.PlayDeathAnimOriginal(theDamageFlags);
+            __instance.GetNetworked<ZombieNetworked>().CheckTargetDeath(() =>
+            {
+                __instance.PlayDeathAnimOriginal(theDamageFlags);
+            });
 
             return false;
         }
@@ -46,12 +49,7 @@ internal static class ZombieSyncPatch
         try
         {
             // Call the original method - this won't trigger our patch due to the flag
-            if (__instance.mZombieType == ZombieType.Target)
-                Instances.GameplayActivity.VersusMode.ZombieLife++;
-            if (__instance.GetNetworked<ZombieNetworked>()?.CheckTargetDeath() == true)
-            {
-                __instance.PlayDeathAnim(theDamageFlags);
-            }
+            __instance.PlayDeathAnim(theDamageFlags);
         }
         finally
         {

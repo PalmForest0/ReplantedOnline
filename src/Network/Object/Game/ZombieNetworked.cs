@@ -105,13 +105,22 @@ internal sealed class ZombieNetworked : NetworkClass
         switch (rpcId)
         {
             case 0:
-                HandleTakeDamageRpc(packetReader);
+                {
+                    var theDamage = packetReader.ReadInt();
+                    var damageFlags = (DamageFlags)packetReader.ReadByte();
+                    HandleTakeDamageRpc(theDamage, damageFlags);
+                }
                 break;
             case 1:
-                HandleDeathRpc(packetReader);
+                {
+                    var damageFlags = (DamageFlags)packetReader.ReadByte();
+                    HandleDeathRpc(damageFlags);
+                }
                 break;
             case 2:
-                HandleEnteringHouseRpc();
+                {
+                    HandleEnteringHouseRpc();
+                }
                 break;
         }
     }
@@ -125,11 +134,8 @@ internal sealed class ZombieNetworked : NetworkClass
     }
 
     [HideFromIl2Cpp]
-    private void HandleTakeDamageRpc(PacketReader packetReader)
+    private void HandleTakeDamageRpc(int theDamage, DamageFlags damageFlags)
     {
-        var theDamage = packetReader.ReadInt();
-        var damageFlags = (DamageFlags)packetReader.ReadByte();
-
         // Only die from rpc
         if (((_Zombie.mBodyHealth + _Zombie.mHelmHealth + _Zombie.mShieldHealth) - theDamage) > 1)
         {
@@ -150,10 +156,16 @@ internal sealed class ZombieNetworked : NetworkClass
     }
 
     [HideFromIl2Cpp]
-    private void HandleDeathRpc(PacketReader packetReader)
+    private void HandleDeathRpc(DamageFlags damageFlags)
     {
-        var damageFlags = (DamageFlags)packetReader.ReadByte();
-        _Zombie.PlayDeathAnimOriginal(damageFlags);
+        if (!dead)
+        {
+            dead = true;
+            CheckTargetDeath(() =>
+            {
+                _Zombie.PlayDeathAnimOriginal(damageFlags);
+            }, true);
+        }
     }
 
     internal void SendEnteringHouseRpc()
@@ -171,24 +183,29 @@ internal sealed class ZombieNetworked : NetworkClass
     }
 
     // Target zombie death logic
-    internal bool CheckTargetDeath()
+    internal void CheckTargetDeath(Action callback, bool isRpc = false)
     {
-        if (_Zombie?.mZombieType == ZombieType.Target)
+        if (_Zombie.mZombieType is ZombieType.Target)
         {
-            if (Instances.GameplayActivity.VersusMode.ZombieLife > 0)
+            if (isRpc)
             {
                 Instances.GameplayActivity.VersusMode.ZombieLife--;
+            }
 
-                if (Instances.GameplayActivity.VersusMode.ZombieLife == 0)
-                {
-                    VersusManager.EndGame(_Zombie?.mController?.gameObject, true);
-
-                    return false;
-                }
+            if (Instances.GameplayActivity.VersusMode.ZombieLife > 0)
+            {
+                callback?.Invoke();
+            }
+            else
+            {
+                VersusManager.EndGame(_Zombie?.mController?.gameObject, true);
+                callback?.Invoke();
             }
         }
-
-        return true;
+        else
+        {
+            callback?.Invoke();
+        }
     }
 
     [HideFromIl2Cpp]
