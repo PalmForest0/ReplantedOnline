@@ -75,12 +75,6 @@ internal sealed class PlantNetworked : NetworkClass
         _Plant?.RemoveNetworkedLookup();
     }
 
-    /// <summary>
-    /// Handles incoming RPC calls for this plant.
-    /// </summary>
-    /// <param name="sender">The client that sent the RPC</param>
-    /// <param name="rpcId">The identifier of the RPC method</param>
-    /// <param name="packetReader">The packet reader containing RPC data</param>
     [HideFromIl2Cpp]
     public override void HandleRpc(SteamNetClient sender, byte rpcId, PacketReader packetReader)
     {
