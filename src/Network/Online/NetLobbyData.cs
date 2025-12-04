@@ -202,7 +202,7 @@ internal class NetLobbyData
         /// Initiates a lobby reset sequence.
         /// Only the host can trigger a lobby reset.
         /// </summary>
-        internal static void ResetLobby()
+        internal void ResetLobby()
         {
             if (NetLobby.AmLobbyHost())
             {
