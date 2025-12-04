@@ -70,8 +70,10 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
         NetworkPrefabsObj = new GameObject($"NetworkPrefabs");
         DontDestroyOnLoad(NetworkPrefabsObj);
 
-        CreatePrefabs<PlantNetworked>(2);
-        CreatePrefabs<ZombieNetworked>(3);
+        var plantPrefab = CreatePrefabs<PlantNetworked>(2);
+        plantPrefab.AnimationControllerNetworked = plantPrefab.gameObject.AddComponent<AnimationControllerNetworked>();
+        var zombiePrefab = CreatePrefabs<ZombieNetworked>(3);
+        zombiePrefab.AnimationControllerNetworked = zombiePrefab.gameObject.AddComponent<AnimationControllerNetworked>();
     }
 
     /// <summary>
