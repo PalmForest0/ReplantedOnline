@@ -1,14 +1,11 @@
-﻿using Il2CppReloaded.Gameplay;
-using Il2CppTekly.PanelViews;
-using Il2CppTMPro;
-using MelonLoader;
-using ReplantedOnline.Helper;
+﻿using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Patches.UI;
 using System.Collections;
-using UnityEngine;
+using System.Drawing;
+using System.Numerics;
 
 namespace ReplantedOnline.Managers;
 
@@ -83,6 +80,10 @@ internal static class VersusManager
     private static TextMeshProUGUI playerList;
     private static TextMeshProUGUI pickSides;
 
+    private static EventTrigger lobbyCodeHeaderTrigger;
+    private static string defaultHeaderText => $"Lobby Code: {NetLobby.LobbyData.LobbyCode}";
+    private static bool copyingLobbyCode = false;
+
     /// <summary>
     /// Initializes the text components for versus mode UI by finding them in the panel hierarchy.
     /// This method should be called when the versus panel is created to cache references to the UI elements.
@@ -113,6 +114,9 @@ internal static class VersusManager
         playerList.color = Color.white;
 
         pickSides = vsPanelView.transform.Find($"Canvas/Layout/Center/Panel/Header/HeaderLabel")?.GetComponentInChildren<TextMeshProUGUI>(true);
+
+        // Add event trigger to header for copying the lobby code to clipboard
+        lobbyCodeHeaderTrigger = vsPanelView.transform.Find($"Canvas/Layout/Center/Panel/Header").gameObject.AddComponent<EventTrigger>();
     }
 
     /// <summary>
@@ -210,7 +214,9 @@ internal static class VersusManager
         // Safety check for null components
         if (zombiePlayer1 == null || zombiePlayer2 == null || plantPlayer1 == null || plantPlayer2 == null) return;
 
-        pickSides?.SetText($"Lobby Code: {NetLobby.LobbyData.LobbyCode}");
+        // Shows the lobby code in the header and resets the header UI events
+        pickSides?.SetText(defaultHeaderText);
+        UpdateHeaderEvents();
 
         // Ensure all text elements are visible
         zombiePlayer1.gameObject.SetActive(true);
@@ -223,6 +229,51 @@ internal static class VersusManager
         zombiePlayer2.SetText(string.Empty);
         plantPlayer1.SetText(string.Empty);
         plantPlayer2.SetText(string.Empty);
+    }
+
+    /// <summary>
+    /// Updates the header text to the current lobby code and resets the events.
+    /// </summary>
+    private static void UpdateHeaderEvents()
+    {
+        EventTrigger trigger = lobbyCodeHeaderTrigger.GetComponent<EventTrigger>();
+        trigger.triggers = new Il2CppSystem.Collections.Generic.List<EventTrigger.Entry>();
+
+        // On pointer enter trigger - modify header text
+        EventTrigger.Entry entryEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        entryEnter.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
+        {
+            if (!copyingLobbyCode) pickSides?.SetText($"Click to Copy");
+        }));
+        trigger.triggers.Add(entryEnter);
+
+        // On pointer exit trigger - reset header text
+        EventTrigger.Entry entryExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        entryExit.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
+        {
+            if (!copyingLobbyCode) pickSides?.SetText(defaultHeaderText);
+        }));
+        trigger.triggers.Add(entryExit);
+
+        // On pointer click trigger - copy the lobby code to clipboard
+        EventTrigger.Entry entryClick = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
+        entryClick.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
+        {
+            if (!copyingLobbyCode) MelonCoroutines.Start(CoCopyLobbyCode());
+        }));
+        trigger.triggers.Add(entryClick);
+    }
+
+    private static IEnumerator CoCopyLobbyCode()
+    {
+        copyingLobbyCode = true;
+        GUIUtility.systemCopyBuffer = NetLobby.LobbyData.LobbyCode;
+        pickSides?.SetText($"Copied to Clipboard!");
+
+        yield return new WaitForSeconds(1f);
+
+        pickSides?.SetText(defaultHeaderText);
+        copyingLobbyCode = false;
     }
 
     /// <summary>
