@@ -84,6 +84,14 @@ internal static class VersusManager
     private static TextMeshProUGUI pickSides;
 
     /// <summary>
+    /// Determines whether all required UI components are initialized and ready for use.
+    /// </summary>
+    internal static bool IsUIReady()
+    {
+        return zombiePlayer1 != null && zombiePlayer2 != null && plantPlayer1 != null && plantPlayer2 != null && playerList != null && pickSides != null;
+    }
+
+    /// <summary>
     /// Initializes the text components for versus mode UI by finding them in the panel hierarchy.
     /// This method should be called when the versus panel is created to cache references to the UI elements.
     /// </summary>

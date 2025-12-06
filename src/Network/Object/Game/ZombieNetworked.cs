@@ -20,11 +20,6 @@ namespace ReplantedOnline.Network.Object.Game;
 internal sealed class ZombieNetworked : NetworkClass
 {
     /// <summary>
-    /// Represents the networked animation controller used to synchronize animation states across multiple clients.
-    /// </summary>
-    internal AnimationControllerNetworked AnimationControllerNetworked;
-
-    /// <summary>
     /// The underlying zombie instance that this networked object represents.
     /// </summary>
     internal Zombie _Zombie;
@@ -53,11 +48,6 @@ internal sealed class ZombieNetworked : NetworkClass
     /// The grid Y coordinate where this zombie is located when spawning.
     /// </summary>
     internal int GridY;
-
-    public void Awake()
-    {
-        AnimationControllerNetworked = gameObject.GetComponent<AnimationControllerNetworked>();
-    }
 
     public void OnDestroy()
     {
@@ -247,9 +237,6 @@ internal sealed class ZombieNetworked : NetworkClass
 
             _Zombie = Utils.SpawnZombie(ZombieType, GridX, GridY, ShakeBush, false);
             _Zombie.AddNetworkedLookup(this);
-
-            AnimationControllerNetworked._AnimationController = _Zombie.mController.AnimationController;
-            AnimationControllerNetworked._AnimationController.AddNetworkedLookup(AnimationControllerNetworked);
 
             gameObject.name = $"{Enum.GetName(_Zombie.mZombieType)}_Zombie ({NetworkId})";
 

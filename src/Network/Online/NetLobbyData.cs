@@ -270,7 +270,7 @@ internal class NetLobbyData
         private static IEnumerator CoWaitHandle(PacketReader packetReader)
         {
             // Wait for the gameplay activity and versus mode to be initialized
-            while (Instances.GameplayActivity?.VersusMode == null)
+            while (Instances.GameplayActivity?.VersusMode == null && !VersusManager.IsUIReady())
             {
                 // If we leave the lobby while waiting, clean up and exit
                 if (!NetLobby.AmInLobby())

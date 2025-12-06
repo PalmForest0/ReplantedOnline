@@ -70,10 +70,8 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
         NetworkPrefabsObj = new GameObject($"NetworkPrefabs");
         DontDestroyOnLoad(NetworkPrefabsObj);
 
-        var plantPrefab = CreatePrefabs<PlantNetworked>(2);
-        plantPrefab.AnimationControllerNetworked = plantPrefab.gameObject.AddComponent<AnimationControllerNetworked>();
-        var zombiePrefab = CreatePrefabs<ZombieNetworked>(3);
-        zombiePrefab.AnimationControllerNetworked = zombiePrefab.gameObject.AddComponent<AnimationControllerNetworked>();
+        var plantPrefab = CreatePrefabs<PlantNetworked>(1);
+        var zombiePrefab = CreatePrefabs<ZombieNetworked>(2);
     }
 
     /// <summary>
@@ -248,7 +246,7 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
                 networkClass.transform.SetParent(NetworkClassesObj.transform);
                 callback?.Invoke(networkClass);
                 NetworkDispatcher.Spawn(networkClass, owner);
-                networkClass.SpawnChildren();
+                networkClass.SpawnChildren(true);
                 networkClass.gameObject.name = $"{typeof(T).Name}({networkClass.NetworkId})";
                 return networkClass;
             }
@@ -261,7 +259,6 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
             networkClass.transform.SetParent(NetworkClassesObj.transform);
             callback?.Invoke(networkClass);
             NetworkDispatcher.Spawn(networkClass, owner);
-            networkClass.SpawnChildren();
             networkClass.gameObject.name = $"{typeof(T).Name}({networkClass.NetworkId})";
             return networkClass;
         }
@@ -271,7 +268,7 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
     /// Initializes and assigns network ownership and identifiers to child components of type NetworkClass
     /// within the current object hierarchy.
     /// </summary>
-    public void SpawnChildren()
+    public void SpawnChildren(bool initOnNetwork)
     {
         // Get all NetworkClass components in children
         var allNetworkClasses = GetComponentsInChildren<NetworkClass>(true);
@@ -339,7 +336,7 @@ internal class NetworkClass : MonoBehaviour, INetworkClass
             NetLobby.LobbyData.NetworkClassSpawned.Add(childNetworkId, netChild);
             netChild.HasSpawned = true;
 
-            if (AmOwner)
+            if (initOnNetwork)
             {
                 var packet = PacketWriter.Get();
                 NetworkSyncPacket.SerializePacket(this, true, packet);

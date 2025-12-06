@@ -33,6 +33,7 @@ internal static class NetworkDispatcher
                     var packet = PacketWriter.Get();
                     NetworkSpawnPacket.SerializePacket(networkClass, packet);
                     SendPacketTo(steamId, packet, PacketTag.NetworkClassSpawn, PacketChannel.Buffered);
+                    packet.Recycle();
                 }
             }
         }
@@ -330,7 +331,6 @@ internal static class NetworkDispatcher
             networkClass.OwnerId = spawnPacket.OwnerId;
             networkClass.Deserialize(packetReader, true);
             networkClass.HasSpawned = true;
-            networkClass.SpawnChildren();
             networkClass.name = $"{networkClass.GetType().Name}({networkClass.NetworkId})";
             MelonLogger.Msg($"[NetworkDispatcher] Spawned custom NetworkClass from {sender.Name}: {spawnPacket.NetworkId}");
         }
@@ -343,10 +343,10 @@ internal static class NetworkDispatcher
                 NetLobby.LobbyData.NetworkClassSpawned[networkClass.NetworkId] = networkClass;
                 networkClass.transform.SetParent(NetworkClass.NetworkClassesObj.transform);
                 networkClass.OwnerId = spawnPacket.OwnerId;
-                networkClass.Deserialize(packetReader, true);
                 networkClass.gameObject.SetActive(true);
+                networkClass.Deserialize(packetReader, true);
                 networkClass.HasSpawned = true;
-                networkClass.SpawnChildren();
+                networkClass.SpawnChildren(false);
                 networkClass.name = $"{networkClass.GetType().Name}({networkClass.NetworkId})";
                 MelonLogger.Msg($"[NetworkDispatcher] Spawned prefab NetworkClass from {sender.Name}: {spawnPacket.NetworkId}, Prefab: {spawnPacket.PrefabId}");
             }

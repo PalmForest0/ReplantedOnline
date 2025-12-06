@@ -14,11 +14,6 @@ namespace ReplantedOnline.Network.Object.Game;
 internal sealed class PlantNetworked : NetworkClass
 {
     /// <summary>
-    /// Represents the networked animation controller used to synchronize animation states across multiple clients.
-    /// </summary>
-    internal AnimationControllerNetworked AnimationControllerNetworked;
-
-    /// <summary>
     /// The underlying plant instance that this networked object represents.
     /// </summary>
     internal Plant _Plant;
@@ -42,11 +37,6 @@ internal sealed class PlantNetworked : NetworkClass
     /// The grid Y coordinate where this plant is located when spawning.
     /// </summary>
     internal int GridY;
-
-    public void Awake()
-    {
-        AnimationControllerNetworked = gameObject.GetComponent<AnimationControllerNetworked>();
-    }
 
     public void Update()
     {
@@ -143,9 +133,6 @@ internal sealed class PlantNetworked : NetworkClass
 
             _Plant = Utils.SpawnPlant(SeedType, ImitaterType, GridX, GridY, false);
             _Plant.AddNetworkedLookup(this);
-
-            AnimationControllerNetworked._AnimationController = _Plant.mController.AnimationController;
-            AnimationControllerNetworked._AnimationController.AddNetworkedLookup(AnimationControllerNetworked);
 
             gameObject.name = $"{Enum.GetName(_Plant.mSeedType)}_Plant ({NetworkId})";
         }
