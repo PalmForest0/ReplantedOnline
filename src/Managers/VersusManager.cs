@@ -245,28 +245,28 @@ internal static class VersusManager
         trigger.triggers = new Il2CppSystem.Collections.Generic.List<EventTrigger.Entry>();
 
         // On pointer enter trigger - modify header text
-        EventTrigger.Entry entryEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-        entryEnter.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
+        EventTrigger.Entry pointerEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        pointerEnter.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
         {
             if (!copyingLobbyCode) pickSides?.SetText($"Click to Copy");
         }));
-        trigger.triggers.Add(entryEnter);
+        trigger.triggers.Add(pointerEnter);
 
         // On pointer exit trigger - reset header text
-        EventTrigger.Entry entryExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-        entryExit.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
+        EventTrigger.Entry pointerExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        pointerExit.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
         {
             if (!copyingLobbyCode) pickSides?.SetText(defaultHeaderText);
         }));
-        trigger.triggers.Add(entryExit);
+        trigger.triggers.Add(pointerExit);
 
         // On pointer click trigger - copy the lobby code to clipboard
-        EventTrigger.Entry entryClick = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
-        entryClick.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
+        EventTrigger.Entry pointerClick = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
+        pointerClick.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
         {
             if (!copyingLobbyCode) MelonCoroutines.Start(CoCopyLobbyCode());
         }));
-        trigger.triggers.Add(entryClick);
+        trigger.triggers.Add(pointerClick);
     }
 
     private static IEnumerator CoCopyLobbyCode()
