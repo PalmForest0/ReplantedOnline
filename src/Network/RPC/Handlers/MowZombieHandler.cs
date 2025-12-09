@@ -1,5 +1,4 @@
-﻿using Il2CppReloaded.Gameplay;
-using ReplantedOnline.Items.Attributes;
+﻿using ReplantedOnline.Items.Attributes;
 using ReplantedOnline.Items.Enums;
 using ReplantedOnline.Modules;
 using ReplantedOnline.Network.Object.Game;
@@ -35,10 +34,7 @@ internal sealed class MowZombieHandler : RPCHandler
             var row = packetReader.ReadInt();
             var netZombie = (ZombieNetworked)packetReader.ReadNetworkClass();
             var lawnMower = Instances.GameplayActivity.Board.FindLawnMowerInRow(row);
-            if (lawnMower != null && !lawnMower.mDead && lawnMower.mMowerState == LawnMowerState.Ready)
-            {
-                lawnMower.MowZombieOriginal(netZombie._Zombie);
-            }
+            lawnMower.MowZombieOriginal(netZombie._Zombie);
         }
     }
 }

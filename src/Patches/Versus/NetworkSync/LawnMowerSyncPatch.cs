@@ -26,10 +26,7 @@ internal static class LawnMowerSyncPatch
             // Send network message to sync this action with other players
             var netZombie = theZombie.GetNetworked<ZombieNetworked>();
 
-            if (__instance.mMowerState == LawnMowerState.Ready)
-            {
-                MowZombieHandler.Send(__instance.Row, netZombie);
-            }
+            MowZombieHandler.Send(__instance.Row, netZombie);
 
             __instance.MowZombieOriginal(theZombie);
 
