@@ -4,10 +4,12 @@ using Il2CppTMPro;
 using MelonLoader;
 using ReplantedOnline.Helper;
 using ReplantedOnline.Modules;
+using ReplantedOnline.Network;
 using ReplantedOnline.Network.Object.Game;
 using ReplantedOnline.Network.Online;
 using ReplantedOnline.Patches.UI;
 using System.Collections;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -133,90 +135,103 @@ internal static class VersusManager
     }
 
     /// <summary>
-    /// Updates the versus side visuals based on the current game state and player roles.
-    /// Assigns player names to appropriate positions on zombie and plant teams and manages button interactability.
+    /// Updates the versus side visuals based on game state and player roles.
+    /// Assigns player names to zombie/plant teams and manages button interactability.
     /// </summary>
     internal static void UpdateSideVisuals()
     {
-        // Clear all existing text before assigning new names
+        // Clear all text fields before assignment
         ResetAllText();
 
-        // Handle different game states for team assignment
-        if (!NetLobby.LobbyData.Networked.PickingSides && !NetLobby.LobbyData.Networked.HostIsOnPlantSide)
-        {
-            // When host chooses zombies, assign host to zombie team and client to plant team
-            foreach (var client in NetLobby.LobbyData.AllClients.Values)
-            {
-                if (client.AmHost)
-                {
-                    // Host is assigned to the first zombie slot
-                    zombiePlayer1?.SetText(client.Name);
-                }
-                else
-                {
-                    // Client is assigned to the second plant slot
-                    plantPlayer2?.SetText(client.Name);
-                }
-            }
+        var networked = NetLobby.LobbyData.Networked;
+        var clients = NetLobby.LobbyData.AllClients.Values;
+        bool isPickingSides = networked.PickingSides;
+        bool isHostOnPlants = networked.HostIsOnPlantSide;
 
-            playerList?.SetText(string.Empty);
-        }
-        else if (!NetLobby.LobbyData.Networked.PickingSides && NetLobby.LobbyData.Networked.HostIsOnPlantSide)
+        // Handle team assignment based on game state
+        if (!isPickingSides)
         {
-            // When host chooses plants, assign both players to plant team
-            foreach (var client in NetLobby.LobbyData.AllClients.Values)
-            {
-                if (client.AmHost)
-                {
-                    // Host is assigned to the first plant slot
-                    plantPlayer1?.SetText(client.Name);
-                }
-                else
-                {
-                    // Client is assigned to the second zombie slot
-                    zombiePlayer2?.SetText(client.Name);
-                }
-            }
-
+            AssignTeamsForGameplay(clients, isHostOnPlants);
             playerList?.SetText(string.Empty);
         }
         else
         {
-            string list = "-----------\n";
-            foreach (var player in NetLobby.LobbyData.AllClients.Values)
-            {
-                string displayName = player.Name.Length > 10
-                    ? string.Concat(player.Name.AsSpan(0, 10), "...")
-                    : player.Name;
-                list += $"{displayName}\n";
-            }
-            playerList?.SetText(list);
+            DisplayPlayerList(clients);
         }
 
-        // Handle button interactability for the host player
-        if (NetLobby.AmLobbyHost())
+        // Update button interactability for host
+        UpdateButtonInteractability();
+    }
+
+    /// <summary>
+    /// Assigns players to teams when not picking sides.
+    /// </summary>
+    private static void AssignTeamsForGameplay(IEnumerable<SteamNetClient> clients, bool hostOnPlants)
+    {
+        foreach (var client in clients)
         {
+            if (client.AmHost)
+            {
+                // Host assignment based on chosen side
+                if (hostOnPlants)
+                    plantPlayer1?.SetText(client.Name);
+                else
+                    zombiePlayer1?.SetText(client.Name);
+            }
+            else
+            {
+                // Client gets opposite side of host
+                if (hostOnPlants)
+                    zombiePlayer2?.SetText(client.Name);
+                else
+                    plantPlayer2?.SetText(client.Name);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Displays the player list when picking sides.
+    /// </summary>
+    private static void DisplayPlayerList(IEnumerable<SteamNetClient> clients)
+    {
+        const int MAX_NAME_LENGTH = 10;
+        const string ELLIPSIS = "...";
+
+        var listBuilder = new StringBuilder("-----------\n");
+
+        foreach (var player in clients)
+        {
+            string displayName = player.Name.Length > MAX_NAME_LENGTH
+                ? string.Concat(player.Name.AsSpan(0, MAX_NAME_LENGTH), ELLIPSIS)
+                : player.Name;
+
+            listBuilder.Append(displayName).AppendLine();
+        }
+
+        playerList?.SetText(listBuilder.ToString());
+    }
+
+    /// <summary>
+    /// Updates button interactability for the host player.
+    /// </summary>
+    private static void UpdateButtonInteractability()
+    {
+        if (!NetLobby.AmLobbyHost())
+            return;
 
 #if DEBUG
-            VsSideChoosererPatch.SetButtonsInteractable(true);
-            return;
+        VsSideChoosererPatch.SetButtonsInteractable(true);
+        return;
 #endif
 
-            // Enable buttons only when game is in progress (not in lobby) and there are at least 2 players
-            if (NetLobby.LobbyData?.Networked != null)
-            {
-                if (NetLobby.LobbyData.Networked.PickingSides && NetLobby.LobbyData.AllClients.Values.Count > 1)
-                {
-                    // Allow host to interact with side selection buttons when conditions are met
-                    VsSideChoosererPatch.SetButtonsInteractable(true);
-                }
-                else
-                {
-                    // Disable buttons when in lobby or with only one player
-                    VsSideChoosererPatch.SetButtonsInteractable(false);
-                }
-            }
-        }
+        var networked = NetLobby.LobbyData?.Networked;
+        var clients = NetLobby.LobbyData?.AllClients.Values;
+
+        bool shouldEnableButtons = networked != null
+            && networked.PickingSides
+            && clients?.Count > 1;
+
+        VsSideChoosererPatch.SetButtonsInteractable(shouldEnableButtons);
     }
 
     /// <summary>
@@ -250,7 +265,7 @@ internal static class VersusManager
         if (trigger != null)
         {
             trigger.triggers = new Il2CppSystem.Collections.Generic.List<EventTrigger.Entry>();
-    
+
             // On pointer enter trigger - modify header text
             EventTrigger.Entry pointerEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
             pointerEnter.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
@@ -258,7 +273,7 @@ internal static class VersusManager
                 if (!copyingLobbyCode) pickSides?.SetText($"Click to Copy");
             }));
             trigger.triggers.Add(pointerEnter);
-    
+
             // On pointer exit trigger - reset header text
             EventTrigger.Entry pointerExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
             pointerExit.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
@@ -266,7 +281,7 @@ internal static class VersusManager
                 if (!copyingLobbyCode) pickSides?.SetText(defaultHeaderText);
             }));
             trigger.triggers.Add(pointerExit);
-    
+
             // On pointer click trigger - copy the lobby code to clipboard
             EventTrigger.Entry pointerClick = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
             pointerClick.callback.AddListener((UnityAction<BaseEventData>)((eventData) =>
